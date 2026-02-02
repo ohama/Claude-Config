@@ -11,18 +11,39 @@
 
 | 명령 | 설명 |
 |------|------|
-| `/claude-config` | 변경 사항 확인 및 commit/push |
-| `/claude-config status` | 상태만 확인 (commit 안 함) |
-| `/claude-config -m "메시지"` | 지정한 메시지로 commit |
+| `/claude-config` | 상태만 확인 (commit 안 함) |
+| `/claude-config push` | 변경 사항 확인 및 commit/push |
+| `/claude-config push -m "메시지"` | 지정한 메시지로 commit |
 | `/claude-config pull` | 원격에서 submodule 가져와서 부모 저장소 업데이트 |
 
 ## 워크플로우
 
-### /claude-config (기본)
+### /claude-config (기본 = status)
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  /claude-config                                         │
+├─────────────────────────────────────────────────────────┤
+│  1. Submodule 상태 표시                                 │
+│     └─ git -C .claude status --short                    │
+│     └─ 변경 없음 → "Clean" 출력                         │
+│     └─ 변경 있음 → 변경 파일 목록 출력                  │
+│                                                         │
+│  2. Submodule 원격 상태                                 │
+│     └─ git -C .claude log origin/master..HEAD --oneline │
+│     └─ 푸시 안 된 커밋 있으면 표시                      │
+│                                                         │
+│  3. 부모 저장소 submodule 참조 상태                     │
+│     └─ git status .claude                               │
+│     └─ 변경 있으면 "(new commits)" 표시                 │
+└─────────────────────────────────────────────────────────┘
+```
+
+### /claude-config push
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  /claude-config push                                    │
 ├─────────────────────────────────────────────────────────┤
 │  0. 전제 조건 확인                                      │
 │     └─ .claude가 submodule인지 확인                     │
@@ -59,27 +80,6 @@
 │     └─ git push                                         │
 │                                                         │
 │  8. 완료 메시지                                         │
-└─────────────────────────────────────────────────────────┘
-```
-
-### /claude-config status
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  /claude-config status                                  │
-├─────────────────────────────────────────────────────────┤
-│  1. Submodule 상태 표시                                 │
-│     └─ git -C .claude status --short                    │
-│     └─ 변경 없음 → "Clean" 출력                         │
-│     └─ 변경 있음 → 변경 파일 목록 출력                  │
-│                                                         │
-│  2. Submodule 원격 상태                                 │
-│     └─ git -C .claude log origin/master..HEAD --oneline │
-│     └─ 푸시 안 된 커밋 있으면 표시                      │
-│                                                         │
-│  3. 부모 저장소 submodule 참조 상태                     │
-│     └─ git status .claude                               │
-│     └─ 변경 있으면 "(new commits)" 표시                 │
 └─────────────────────────────────────────────────────────┘
 ```
 
