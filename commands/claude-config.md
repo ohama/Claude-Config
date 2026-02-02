@@ -53,6 +53,7 @@ git push
 | `/claude-config` | 변경 사항 확인 및 commit/push |
 | `/claude-config status` | 상태만 확인 (commit 안 함) |
 | `/claude-config -m "메시지"` | 지정한 메시지로 commit |
+| `/claude-config pull` | 원격에서 submodule 가져와서 부모 저장소 업데이트 |
 
 ## 워크플로우
 
@@ -80,6 +81,34 @@ git push
 │     └─ git push                                         │
 │                                                         │
 │  6. 완료 메시지                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Pull 워크플로우
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  /claude-config pull                                    │
+├─────────────────────────────────────────────────────────┤
+│  1. Submodule fetch & pull                              │
+│     └─ git -C .claude fetch origin                      │
+│     └─ git -C .claude pull origin master                │
+│     └─ 변경 없음 → "Already up to date" 출력 후 종료   │
+│     └─ 변경 있음 → 계속                                 │
+│                                                         │
+│  2. 변경 내용 표시                                      │
+│                                                         │
+│  3. 부모 저장소 상태 확인                               │
+│     └─ git status (.claude 변경 확인)                   │
+│     └─ 변경 없음 → 종료                                 │
+│     └─ 변경 있음 → 계속                                 │
+│                                                         │
+│  4. 부모 저장소 업데이트                                │
+│     └─ git add .claude                                  │
+│     └─ git commit -m "chore: update .claude submodule"  │
+│     └─ git push                                         │
+│                                                         │
+│  5. 완료 메시지                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
