@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(xargs:*)",
+      "Skill(gsd:complete-milestone)",
+      "Skill(push)",
+      "Skill(howto)"
+    ]
+  }
+}
