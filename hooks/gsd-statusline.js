@@ -72,7 +72,17 @@ function readUsageCache() {
   try {
     const cachePath = getUsageCachePath();
     if (!fs.existsSync(cachePath)) return null;
-    return JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
+    const cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'));
+    // Parse date strings back to Date objects
+    if (cache.data) {
+      if (cache.data.fiveHourResetsAt) {
+        cache.data.fiveHourResetsAt = new Date(cache.data.fiveHourResetsAt);
+      }
+      if (cache.data.weeklyResetsAt) {
+        cache.data.weeklyResetsAt = new Date(cache.data.weeklyResetsAt);
+      }
+    }
+    return cache;
   } catch {
     return null;
   }
