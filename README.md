@@ -17,6 +17,78 @@ git add .gitmodules .claude
 git commit -m "chore: add .claude as submodule"
 ```
 
+## 기존 프로젝트에 추가
+
+이미 git이 초기화된 프로젝트에 Claude-Config를 submodule로 추가하는 방법.
+
+### Case 1: .claude 디렉토리가 없는 경우
+
+```bash
+cd existing-project
+
+# submodule 추가
+git submodule add git@github-ohama:ohama/Claude-Config.git .claude
+
+# 커밋
+git add .gitmodules .claude
+git commit -m "chore: add .claude as submodule"
+```
+
+### Case 2: .claude 디렉토리가 이미 있는 경우
+
+기존 `.claude/` 디렉토리를 백업하고 submodule로 교체.
+
+```bash
+cd existing-project
+
+# 1. 기존 .claude 백업
+mv .claude .claude.backup
+
+# 2. git에서 .claude 제거 (tracked인 경우)
+git rm -r --cached .claude 2>/dev/null || true
+
+# 3. submodule 추가
+git submodule add git@github-ohama:ohama/Claude-Config.git .claude
+
+# 4. 백업에서 필요한 설정 복사 (선택)
+cp .claude.backup/settings.local.json .claude/ 2>/dev/null || true
+
+# 5. 커밋
+git add .gitmodules .claude
+git commit -m "chore: add .claude as submodule"
+
+# 6. 백업 정리 (확인 후)
+rm -rf .claude.backup
+```
+
+### Case 3: .claude가 이미 submodule인데 다른 원격을 가리키는 경우
+
+```bash
+cd existing-project
+
+# 1. 기존 submodule 제거
+git submodule deinit -f .claude
+git rm -f .claude
+rm -rf .git/modules/.claude
+
+# 2. 새 submodule 추가
+git submodule add git@github-ohama:ohama/Claude-Config.git .claude
+
+# 3. 커밋
+git add .gitmodules .claude
+git commit -m "chore: replace .claude submodule"
+```
+
+### 확인
+
+```bash
+# submodule 상태 확인
+git submodule status
+
+# 원격 URL 확인
+git config --file .gitmodules --get submodule..claude.url
+```
+
 ## 기존 프로젝트 클론
 
 ```bash
