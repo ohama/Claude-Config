@@ -34,6 +34,22 @@ Git 저장소 초기화, .gitignore 관리, 스마트 커밋을 수행합니다.
 
 ---
 
+### `/push`
+
+Git 푸시를 실행합니다. 기본은 단순 푸시, 옵션으로 검증 추가.
+
+| 사용법 | 설명 |
+|--------|------|
+| `/push` | 현재 브랜치를 바로 푸시 |
+| `/push --safe` | 푸시 전 상태 확인 및 검증 |
+| `/push --tags` | 태그도 함께 푸시 |
+| `/push --pr` | 푸시 후 PR 생성 |
+| `/push --force` | Force push (확인 후) |
+
+옵션 조합 가능: `/push --safe --tags --pr`
+
+---
+
 ### `/release`
 
 버전 업그레이드, CHANGELOG 작성, 릴리스 커밋을 생성합니다.
@@ -43,6 +59,34 @@ Git 저장소 초기화, .gitignore 관리, 스마트 커밋을 수행합니다.
 | `/release patch` | 패치 버전 (0.0.X) |
 | `/release minor` | 마이너 버전 (0.X.0) |
 | `/release major` | 메이저 버전 (X.0.0) |
+
+---
+
+### `/submodule`
+
+Git submodule을 최신 버전으로 업데이트합니다.
+
+| 사용법 | 설명 |
+|--------|------|
+| `/submodule <name>` | 지정한 submodule을 최신화 |
+| `/submodule` | 모든 submodule 최신화 |
+
+---
+
+### `/claude-config`
+
+`.claude/` submodule의 변경 사항을 commit, push하고 부모 저장소도 업데이트합니다.
+
+| 사용법 | 설명 |
+|--------|------|
+| `/claude-config` | 상태만 확인 |
+| `/claude-config push` | 변경 사항 commit/push |
+| `/claude-config push -m "메시지"` | 지정한 메시지로 commit |
+| `/claude-config pull` | 원격에서 submodule pull 후 부모 저장소 업데이트 |
+
+**전제 조건:**
+- `.claude/`가 git submodule로 설정되어 있어야 함
+- 부모 저장소의 working directory가 clean해야 함
 
 ---
 
