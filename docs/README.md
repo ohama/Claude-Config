@@ -74,11 +74,11 @@ GSD는 "Get Shit Done"의 약자로, 솔로 개발자가 Claude Code와 함께 �
 ## 개발 지식 기록
 
 ```bash
-# 문서 목록 보기
+# 세션 분석 + 문서 작성 (원스톱)
 /howto
 
-# 세션 작업 기록
-/howto scan
+# 문서 목록 보기
+/howto list
 
 # 새 문서 생성
 /howto new "제목"

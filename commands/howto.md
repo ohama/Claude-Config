@@ -18,10 +18,10 @@ description: 개발 지식을 howto 문서로 기록하고 관리
 
 | 명령 | 설명 |
 |------|------|
-| `/howto` | 문서 목록 + TODO (최신순) |
-| `/howto --oldest` | 작성순 정렬 (오래된 것 먼저) |
-| `/howto --alpha` | 알파벳순 정렬 |
-| `/howto scan` | 세션 분석 → TODO에 추가 |
+| `/howto` | 세션 분석 → TODO에 추가 → 문서 작성 |
+| `/howto list` | 문서 목록 + TODO (최신순) |
+| `/howto list --oldest` | 작성순 정렬 (오래된 것 먼저) |
+| `/howto list --alpha` | 알파벳순 정렬 |
 | `/howto next [번호]` | TODO에서 문서 생성 (기본값: 1) |
 | `/howto all` | TODO 전체 문서 생성 |
 | `/howto rm <번호>` | TODO에서 항목 삭제 |
@@ -30,10 +30,9 @@ description: 개발 지식을 howto 문서로 기록하고 관리
 
 **일반적인 워크플로우:**
 ```
-/howto scan    →  세션에서 주제 발견, TODO에 추가
-/howto         →  문서 목록 + TODO 확인
-/howto next    →  첫 번째 TODO 문서화
-/howto all     →  TODO 전체 문서화
+/howto         →  세션 분석 + TODO 추가 + 문서 작성 (원스톱)
+/howto list    →  문서 목록 + TODO 확인
+/howto next    →  TODO에서 개별 문서화
 ```
 
 </commands>
@@ -43,10 +42,10 @@ description: 개발 지식을 howto 문서로 기록하고 관리
 ## 입력 파싱
 
 ```
-/howto              → list (문서 목록 + TODO, 최신순)
-/howto --oldest     → list (작성순 정렬)
-/howto --alpha      → list (알파벳순 정렬)
-/howto scan         → scan (세션 분석 → TODO 추가)
+/howto              → scan_and_write (세션 분석 → TODO 추가 → 문서 작성)
+/howto list         → list (문서 목록 + TODO, 최신순)
+/howto list --oldest → list (작성순 정렬)
+/howto list --alpha → list (알파벳순 정렬)
 /howto next [숫자]  → next (TODO에서 생성, 기본값: 1)
 /howto all          → all (TODO 전체 생성)
 /howto rm <숫자>    → remove (TODO에서 삭제)
@@ -54,14 +53,25 @@ description: 개발 지식을 howto 문서로 기록하고 관리
 /howto 키워드       → search 또는 view
 ```
 
+## Action: scan_and_write (기본 동작)
+
+세션을 분석하여 문서화할 주제를 발견하고 TODO에 추가한 후, 바로 문서를 작성.
+
+**흐름:**
+1. scan 실행 → 주제 발견 → TODO에 추가
+2. TODO 항목 확인 → 사용자에게 작성 여부 확인
+3. 확인되면 all 실행 → TODO 전체 문서 작성
+
+간단히: `/howto` = `/howto scan` + `/howto all` 통합
+
 ## Action: list
 
 README.md와 TODO.md를 함께 출력. 기본 정렬은 작성일 역순 (최신 먼저).
 
 **정렬 옵션:**
-- `/howto` — 최신순 (기본)
-- `/howto --oldest` — 작성순 (오래된 것 먼저)
-- `/howto --alpha` — 알파벳순
+- `/howto list` — 최신순 (기본)
+- `/howto list --oldest` — 작성순 (오래된 것 먼저)
+- `/howto list --alpha` — 알파벳순
 
 **구현:**
 ```bash
@@ -97,12 +107,12 @@ done | sort -r  # 최신순 정렬
 | 1 | 새로운 주제 | `new-topic.md` |
 
 ---
-`/howto --oldest` — 작성순 정렬
-`/howto scan` — 세션에서 주제 발견
+`/howto list --oldest` — 작성순 정렬
+`/howto` — 세션 분석 + 문서 작성
 `/howto next` — TODO #1 문서 작성
 ```
 
-## Action: scan
+## Action: scan (내부용)
 
 세션을 분석하여 문서화할 주제를 발견하고 TODO에 추가.
 
@@ -148,7 +158,7 @@ ls docs/howto/*.md 2>/dev/null
 → TODO.md에 추가됨
 
 ---
-`/howto` — 전체 목록 확인
+`/howto list` — 전체 목록 확인
 `/howto next` — 문서 작성
 `/howto all` — 전체 문서 작성
 ```
@@ -388,28 +398,28 @@ docs/howto/
 
 ## 예시
 
-### 목록 보기 (최신순, 기본)
+### 세션 분석 + 문서 작성 (기본)
 ```
 /howto
+→ 세션 분석 → TODO 추가 → 문서 작성 (원스톱)
+```
+
+### 목록 보기 (최신순)
+```
+/howto list
 → 문서 목록 (최신순) + TODO 표시
 ```
 
 ### 작성순 정렬
 ```
-/howto --oldest
+/howto list --oldest
 → 문서 목록 (오래된 것부터) + TODO 표시
 ```
 
 ### 알파벳순 정렬
 ```
-/howto --alpha
+/howto list --alpha
 → 문서 목록 (알파벳순) + TODO 표시
-```
-
-### 세션 분석
-```
-/howto scan
-→ 세션에서 주제 발견, TODO에 추가
 ```
 
 ### TODO에서 생성
