@@ -4,7 +4,7 @@ description: 개발 지식을 howto 문서로 기록하고 관리
 ---
 
 <role>
-개발 지식 기록 도우미. 작업 중 배운 것, 해결한 문제, 반복 패턴을 `docs/howto/`에 기록.
+개발 지식 기록 도우미. 작업 중 배운 것, 해결한 문제, 반복 패턴을 `documentation/howto/`에 기록.
 
 **원칙:**
 - 3년차 개발자가 따라할 수 있는 수준
@@ -76,7 +76,7 @@ README.md와 TODO.md를 함께 출력. 기본 정렬은 작성일 역순 (최신
 **구현:**
 ```bash
 # 각 문서의 front matter에서 created 날짜 추출
-for file in docs/howto/*.md; do
+for file in documentation/howto/*.md; do
   [ "$(basename "$file")" = "README.md" ] && continue
   [ "$(basename "$file")" = "TODO.md" ] && continue
   created=$(grep -m1 "^created:" "$file" 2>/dev/null | cut -d' ' -f2)
@@ -119,7 +119,7 @@ done | sort -r  # 최신순 정렬
 **Step 1: 분석**
 ```bash
 git log --oneline -20
-ls docs/howto/*.md 2>/dev/null
+ls documentation/howto/*.md 2>/dev/null
 ```
 
 **Step 2: 주제 식별 (품질 기준)**
@@ -141,7 +141,7 @@ ls docs/howto/*.md 2>/dev/null
 **제외:**
 - 일회성 수정, 라이브러리 기본 사용법
 - 이미 문서화된 내용
-- 프로젝트 특화 내용 (→ 프로젝트 docs/로)
+- 프로젝트 특화 내용 (→ 프로젝트 documentation/로)
 
 **Step 3: TODO에 추가**
 
@@ -183,9 +183,9 @@ TODO #1: FsCheck 속성 테스트
 ```
 
 생성 후:
-- `docs/howto/파일명.md` 생성
-- `docs/howto/README.md` 업데이트
-- `docs/howto/TODO.md`에서 항목 제거
+- `documentation/howto/파일명.md` 생성
+- `documentation/howto/README.md` 업데이트
+- `documentation/howto/TODO.md`에서 항목 제거
 
 ## Action: all
 
@@ -227,8 +227,8 @@ TODO #1 삭제됨: FsCheck 속성 테스트
 
 ```bash
 # 검색
-ls docs/howto/*키워드*.md
-grep -l "키워드" docs/howto/*.md
+ls documentation/howto/*키워드*.md
+grep -l "키워드" documentation/howto/*.md
 ```
 
 </execution>
@@ -317,7 +317,7 @@ try { await receive(); } catch (e) { handleReceiveError(e); }
 ## 파일 구조
 
 ```
-docs/howto/
+documentation/howto/
 ├── README.md      # 문서 목록
 ├── TODO.md        # 대기 주제 목록
 ├── setup-*.md     # 설정 문서들

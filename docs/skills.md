@@ -210,4 +210,4 @@ skills_integration:
 5. Examples 섹션
 6. 관련 에이전트에 skills_integration 추가
 
-**참고:** `docs/howto/create-skill.md` (생성 예정)
+**참고:** `documentation/howto/create-skill.md` (생성 예정)

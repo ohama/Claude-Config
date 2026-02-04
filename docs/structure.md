@@ -182,12 +182,12 @@ GSD 사용 시 생성되는 프로젝트 파일:
         └── ...
 ```
 
-## Howto 문서 (`docs/howto/`)
+## Howto 문서 (`documentation/howto/`)
 
 개발 지식 기록:
 
 ```
-docs/howto/
+documentation/howto/
 ├── README.md               # 문서 목록 (단일 소스)
 ├── create-skill.md         # 스킬 생성 방법
 ├── check-consistency.md    # 시스템 일관성 검사

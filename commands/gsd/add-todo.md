@@ -61,7 +61,7 @@ Infer area from file paths:
 | `src/auth/*`, `auth/*` | `auth` |
 | `src/db/*`, `database/*` | `database` |
 | `tests/*`, `__tests__/*` | `testing` |
-| `docs/*` | `docs` |
+| `documentation/*` | `documentation` |
 | `.planning/*` | `planning` |
 | `scripts/*`, `bin/*` | `tooling` |
 | No files or unclear | `general` |
