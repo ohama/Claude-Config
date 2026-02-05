@@ -99,6 +99,7 @@ Claude Code 통합 설정:
 #### 범용 명령어 (`commands/`)
 
 - `commit.md` - Git 초기화, .gitignore 관리, 스마트 커밋
+- `current.md` - 프로젝트 현황 요약 (current phase/plan 상세)
 - `howto.md` - 개발 지식 기록 및 관리
 - `mdbook.md` - mdBook 문서 사이트 설정 및 GitHub Pages 배포
 - `push.md` - Git 푸시 (안전 모드, 태그, PR 지원)

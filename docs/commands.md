@@ -73,23 +73,46 @@ Git submodule을 최신 버전으로 업데이트합니다.
 
 ---
 
-### `/mdbook`
+### `/current`
 
-mdBook 문서 사이트를 설정합니다. 소스 디렉토리의 .md 파일을 book/src/로 구성하고, docs/에 빌드합니다.
+프로젝트 현황을 빠르게 파악합니다. Project, Milestone, Phase, Plan을 한눈에 보여주되, current phase와 current plan만 상세히 표시합니다.
 
 | 사용법 | 설명 |
 |--------|------|
-| `/mdbook <dir>` | 지정 디렉토리의 .md 파일로 mdBook 구성 |
-| `/mdbook` | 대화형 설정 시작 (디렉토리 질문 포함) |
-| `/mdbook init` | 기본값으로 빠른 초기화 (빈 템플릿) |
-| `/mdbook build` | 기존 book/ 빌드만 실행 |
-| `/mdbook serve` | 로컬 개발 서버 |
+| `/current` | 프로젝트 현황 요약 |
 
-**생성 파일:**
-- `book/book.toml` - 설정
-- `book/src/SUMMARY.md` - 목차
+**표시 정보:**
+- 전체 Phase 목록 (진행도 포함)
+- Current Phase 상세 (goal, success criteria, plans)
+- Current Plan 상세 (objective, tasks, verification)
+- 다음 행동 안내
+
+---
+
+### `/mdbook`
+
+mdBook 문서 사이트를 설정합니다. 지정 디렉토리를 mdBook 프로젝트로 구성하고 docs/에 빌드합니다.
+
+| 사용법 | 설명 |
+|--------|------|
+| `/mdbook <dir>` | 지정 디렉토리를 mdBook으로 구성 (최초 설정 또는 SUMMARY 업데이트) |
+| `/mdbook` | 대화형 설정 시작 (디렉토리 질문 포함) |
+| `/mdbook init <dir>` | 기본값으로 빠른 초기화 (빈 템플릿) |
+| `/mdbook build <dir>` | 빌드만 실행 |
+| `/mdbook serve <dir>` | 로컬 개발 서버 |
+
+**아키텍처:** `<dir>` 자체가 mdBook 프로젝트 (별도 book/ 디렉토리 없음, `src = "."`)
+
+**추가되는 파일 (3개):**
+- `<dir>/book.toml` - 설정
+- `<dir>/SUMMARY.md` - 목차
+- `<dir>/introduction.md` - 소개 페이지
+
+**빌드 출력:**
 - `docs/` - 빌드된 HTML (GitHub Pages용)
 - `.github/workflows/mdbook.yml` - 자동 빌드
+
+**재실행 시:** book.toml이 있으면 업데이트 모드 (SUMMARY.md 동기화)
 
 ---
 
