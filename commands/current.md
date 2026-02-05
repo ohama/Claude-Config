@@ -7,6 +7,14 @@ description: 프로젝트 현황 요약 (current phase/plan 상세)
 프로젝트 현황을 빠르게 파악하는 명령. Project, Milestone, Phase, Plan을 한눈에 보여주되, current phase와 current plan만 상세히 표시한다.
 
 특수문자(이모지 등)를 사용하지 않는다.
+
+## 서브커맨드
+
+| 명령 | 설명 |
+|------|------|
+| `/current` | 압축 요약 (기본) |
+| `/current detail` | 전체 현황 (phase/plan 상세 포함) |
+
 </role>
 
 <execution>
@@ -62,7 +70,12 @@ STATE.md에서 현재 위치를 파싱한다:
 - `Plan:` 행에서 현재 plan 번호
 - `Status:` 행에서 상태
 
-## Step 5: 출력
+## Step 5: 인자 분기
+
+- 인자 없음 (`/current`) → **요약 모드** (이 파일 하단의 "요약 모드" 참조)
+- 인자 `detail` (`/current detail`) → **상세 모드** (아래 계속)
+
+## Step 5-detail: 상세 출력
 
 아래 형식으로 출력한다. 특수문자 없이 텍스트만 사용.
 
@@ -165,5 +178,42 @@ Status: 미계획
 모든 phase가 완료되었습니다.
 /gsd:complete-milestone 로 마일스톤을 완료하세요.
 ```
+
+---
+
+## Step 5-summary: 요약 출력 (기본 모드)
+
+인자 없음 (`/current`)일 때 Step 1~4는 동일하게 실행하되, 아래 압축 형식으로 출력한다.
+
+### 출력 형식
+
+```
+{프로젝트 이름} | {완료 phase}/{전체 phase} phases | Phase {N}: {Phase 이름} ({done}/{total} plans) | {상태}
+```
+
+한 줄 예시:
+
+```
+MyProject | 2/5 phases | Phase 3: Auth Frontend (1/3 plans) | 진행중
+```
+
+Phase 목록도 한 줄씩 압축:
+
+```
+{프로젝트 이름} | {완료}/{전체} phases
+
+  1. Foundation        3/3  완료
+  2. Auth Backend      2/2  완료
+> 3. Auth Frontend     1/3  진행중
+  4. Testing           0/0  미계획
+  5. Deploy            0/0  미계획
+
+Current: Phase 3, Plan 03-02 (세션 관리) - 진행중
+Next: /gsd:execute-phase 3
+```
+
+- Current Phase의 goal, success criteria, plan 상세는 생략
+- Current Plan의 tasks, verification은 생략
+- Phase 목록 + 현재 위치 + 다음 행동만 표시
 
 </execution>
