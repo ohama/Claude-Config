@@ -19,6 +19,7 @@ mdBook 문서 사이트 설정 도우미. 지정 디렉토리를 mdBook 프로�
 | `/mdbook` | 대화형 설정 시작 (디렉토리 질문 포함) |
 | `/mdbook init <dir>` | 기본값으로 빠른 초기화 (빈 템플릿) |
 | `/mdbook build <dir>` | 빌드만 실행 |
+| `/mdbook clean <dir>` | 빌드 출력 정리 (docs/ 삭제) |
 | `/mdbook serve <dir>` | 로컬 개발 서버 |
 
 </commands>
@@ -242,8 +243,11 @@ docs/ 폴더가 이미 존재합니다.
 ## Step 7: 빌드
 
 ```bash
+mdbook clean {DIR}
 mdbook build {DIR}
 ```
+
+**참고:** `mdbook clean`은 이전 빌드 출력을 삭제하여 삭제된 챕터의 잔여 HTML 파일이 남지 않도록 한다.
 
 ## Step 8: SUMMARY.md 동기화 확인 (업데이트 모드)
 
@@ -272,6 +276,7 @@ SUMMARY.md를 업데이트할까요? [Y/N]
 5. N 선택 시 또는 차이 없으면: 빌드만 실행
 
 ```bash
+mdbook clean {DIR}
 mdbook build {DIR}
 ```
 
@@ -300,6 +305,10 @@ on:
       - '{DIR}/**'
   workflow_dispatch:
 
+concurrency:
+  group: mdbook-build
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -309,6 +318,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v2
@@ -316,19 +327,21 @@ jobs:
           mdbook-version: 'latest'
 
       - name: Build mdBook
-        run: mdbook build {DIR}
+        run: |
+          mdbook clean {DIR}
+          mdbook build {DIR}
 
       - name: Check for changes
         id: check
         run: |
-          git diff --quiet docs/ || echo "changes=true" >> $GITHUB_OUTPUT
+          git add docs/
+          git diff --cached --quiet || echo "changes=true" >> $GITHUB_OUTPUT
 
       - name: Commit and push
         if: steps.check.outputs.changes == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
           git commit -m "docs: rebuild mdBook site"
           git push
 ```
@@ -434,12 +447,24 @@ mdbook build {DIR}
 
 빌드만 실행:
 ```bash
+mdbook clean {DIR}
 mdbook build {DIR}
 ```
 
 `{DIR}` 생략 시:
 - 현재 디렉토리에 book.toml이 있으면 `.`으로 빌드
 - 없으면 book.toml을 가진 하위 디렉토리를 자동 탐지
+
+## /mdbook clean <dir>
+
+빌드 출력 정리 (stale 파일 제거):
+```bash
+mdbook clean {DIR}
+```
+
+- book.toml의 `build-dir`에 해당하는 디렉토리를 삭제
+- 챕터 삭제 후 남은 잔여 HTML 파일 정리에 유용
+- `{DIR}` 생략 시: `/mdbook build`와 동일한 자동 탐지 규칙 적용
 
 ## /mdbook serve <dir>
 

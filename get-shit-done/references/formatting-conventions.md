@@ -178,3 +178,15 @@ Capitalize status keywords:
 - VERIFIED, FAILED, MISSING
 - WIRED, ORPHANED, STUB
 - BLOCKED, COMPLETE, PENDING
+
+## 한국어 문체
+
+문서 작성 시 "~입니다/~합니다" 경어체가 아닌 **"~이다/~한다" 평서체**를 사용한다.
+
+```markdown
+✓ 올바름: 이 파일은 설정을 관리한다.
+✗ 잘못됨: 이 파일은 설정을 관리합니다.
+
+✓ 올바름: 빌드 전 stale 파일을 제거해야 한다.
+✗ 잘못됨: 빌드 전 stale 파일을 제거해야 합니다.
+```
