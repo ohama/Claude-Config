@@ -73,6 +73,26 @@ Git submodule을 최신 버전으로 업데이트합니다.
 
 ---
 
+### `/mdbook`
+
+mdBook 문서 사이트를 설정합니다. 소스 디렉토리의 .md 파일을 book/src/로 구성하고, docs/에 빌드합니다.
+
+| 사용법 | 설명 |
+|--------|------|
+| `/mdbook <dir>` | 지정 디렉토리의 .md 파일로 mdBook 구성 |
+| `/mdbook` | 대화형 설정 시작 (디렉토리 질문 포함) |
+| `/mdbook init` | 기본값으로 빠른 초기화 (빈 템플릿) |
+| `/mdbook build` | 기존 book/ 빌드만 실행 |
+| `/mdbook serve` | 로컬 개발 서버 |
+
+**생성 파일:**
+- `book/book.toml` - 설정
+- `book/src/SUMMARY.md` - 목차
+- `docs/` - 빌드된 HTML (GitHub Pages용)
+- `.github/workflows/mdbook.yml` - 자동 빌드
+
+---
+
 ### `/claude-config`
 
 `.claude/` submodule의 변경 사항을 commit, push하고 부모 저장소도 업데이트합니다.

@@ -8,9 +8,12 @@
 ├── agents/                 # GSD 특수 에이전트 정의 (11개)
 ├── commands/               # 슬래시 명령어
 │   ├── gsd/                # GSD 명령어 (27개)
-│   └── howto.md            # 개발 지식 기록 명령어
+│   ├── howto.md            # 개발 지식 기록 명령어
+│   └── mdbook.md           # mdBook 문서 사이트 설정
 ├── skills/                 # 방법론 및 패턴
-│   └── gsd/                # GSD 스킬 (11개)
+│   ├── gsd/                # GSD 스킬 (11개)
+│   ├── mdbook-docs-images.skill.md      # mdBook 문서·이미지 규칙
+│   └── markdown-image-insertion.skill.md # Markdown 이미지 삽입 규칙
 ├── get-shit-done/          # GSD 코어 시스템
 │   ├── VERSION             # 현재 버전
 │   ├── config/             # 스키마 및 설정 정의
@@ -97,11 +100,24 @@ Claude Code 통합 설정:
 
 - `commit.md` - Git 초기화, .gitignore 관리, 스마트 커밋
 - `howto.md` - 개발 지식 기록 및 관리
+- `mdbook.md` - mdBook 문서 사이트 설정 및 GitHub Pages 배포
+- `push.md` - Git 푸시 (안전 모드, 태그, PR 지원)
 - `release.md` - 버전 업그레이드, CHANGELOG 작성, 릴리스 커밋
+- `submodule.md` - Git submodule 최신화
+- `claude-config.md` - .claude/ submodule 관리
 
-### 4. `skills/gsd/` (12개 스킬)
+### 4. `skills/` (12개 GSD 스킬 + 2개 프로젝트 스킬)
 
 에이전트가 참조하는 방법론 및 패턴:
+
+**프로젝트 전용 스킬 (`skills/`)**
+
+| 스킬 | 용도 |
+|------|------|
+| `mdbook-docs-images` | mdBook 문서·이미지·구조 규칙 |
+| `markdown-image-insertion` | Markdown 이미지 삽입 규칙 |
+
+**GSD 스킬 (`skills/gsd/`)**
 
 | 스킬 | 용도 |
 |------|------|

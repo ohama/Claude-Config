@@ -16,6 +16,37 @@
 |--------------|------|------|
 | `gsd:*` | `.claude/skills/gsd/` | GSD 내부 방법론 |
 | `superpowers:*` | `.claude/skills/superpowers/` | 외부 통합 스킬 |
+| (루트) | `.claude/skills/` | 프로젝트 전용 스킬 |
+
+---
+
+## 프로젝트 전용 스킬 (2개)
+
+#### `mdbook-docs-images`
+
+mdBook 문서 작성 시 이미지·구조·렌더링 규칙을 강제하는 스킬.
+
+**트리거:** mdBook 기반 문서를 생성·편집할 때 자동 적용
+
+**규칙:**
+- mdBook 기본 구조 (`book/src/`, `SUMMARY.md`)
+- 이미지는 `src/images/` 하위, 상대경로만 사용
+- HTML 사용 금지 (명시적 요청 시만 허용)
+- 이미지 설계 주석을 HTML 주석으로 삽입
+
+---
+
+#### `markdown-image-insertion`
+
+Markdown 문서 내 이미지 삽입 규칙 (경로, 캡션, HTML 제한 등)을 강제하는 스킬.
+
+**트리거:** Markdown 문서를 생성·편집할 때 자동 적용
+
+**규칙:**
+- Markdown 표준 문법만 사용 (`![alt](images/file.png)`)
+- 상대경로만 허용, URL/절대경로 금지
+- 캡션은 이미지 아래 기울임꼴
+- 실제 이미지 파일은 생성하지 않고, 설계 주석으로 명세 제공
 
 ---
 
