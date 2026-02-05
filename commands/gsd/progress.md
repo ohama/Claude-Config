@@ -44,6 +44,42 @@ If missing STATE.md: suggest `/gsd:new-project`.
 This means a milestone was completed and archived. Go to **Route F** (between milestones).
 
 If missing both ROADMAP.md and PROJECT.md: suggest `/gsd:new-project`.
+
+**Check for nearby .planning/ directories (orphan warning):**
+
+After confirming `.planning/` exists in CWD, scan for duplicate `.planning/` directories that could cause confusion:
+
+```bash
+CURRENT_DIR=$(pwd)
+NEARBY_PLANNING=""
+
+# Scan parent directories (up 3 levels)
+CHECK_DIR="$CURRENT_DIR"
+for i in 1 2 3; do
+  CHECK_DIR=$(dirname "$CHECK_DIR")
+  if [ -d "$CHECK_DIR/.planning" ] && [ "$CHECK_DIR" != "$CURRENT_DIR" ]; then
+    NEARBY_PLANNING="$NEARBY_PLANNING\n  PARENT: $CHECK_DIR/.planning/"
+  fi
+done
+
+# Scan child directories (down 2 levels)
+for dir in $(find "$CURRENT_DIR" -mindepth 1 -maxdepth 2 -type d -name ".planning" 2>/dev/null); do
+  NEARBY_PLANNING="$NEARBY_PLANNING\n  CHILD: $dir"
+done
+```
+
+**If nearby `.planning/` found**, display a warning:
+
+```
+WARNING: Found other .planning/ directories nearby:
+  [list of paths]
+
+This can cause confusion between projects.
+Consider removing orphaned directories or running GSD commands from the correct directory.
+```
+
+Continue with the rest of the progress check (this is a warning only, not blocking).
+
 </step>
 
 <step name="load">

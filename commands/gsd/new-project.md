@@ -47,7 +47,47 @@ This is the most leveraged moment in any project. Deep questioning here means be
    [ -f .planning/PROJECT.md ] && echo "ERROR: Project already initialized. Use /gsd:progress" && exit 1
    ```
 
-2. **Check existing git files:**
+2. **Check for nearby .planning/ directories (orphan detection):**
+
+   Scan parent directories (up 3 levels) and child directories (down 2 levels) for `.planning/` that could cause confusion:
+
+   ```bash
+   CURRENT_DIR=$(pwd)
+   NEARBY_PLANNING=""
+
+   # Scan parent directories (up 3 levels)
+   CHECK_DIR="$CURRENT_DIR"
+   for i in 1 2 3; do
+     CHECK_DIR=$(dirname "$CHECK_DIR")
+     if [ -d "$CHECK_DIR/.planning" ] && [ "$CHECK_DIR" != "$CURRENT_DIR" ]; then
+       NEARBY_PLANNING="$NEARBY_PLANNING\n  PARENT: $CHECK_DIR/.planning/"
+     fi
+   done
+
+   # Scan child directories (down 2 levels)
+   for dir in $(find "$CURRENT_DIR" -mindepth 1 -maxdepth 2 -type d -name ".planning" 2>/dev/null); do
+     NEARBY_PLANNING="$NEARBY_PLANNING\n  CHILD: $dir"
+   done
+   ```
+
+   **If nearby `.planning/` found**, use AskUserQuestion:
+   - header: "Duplicate"
+   - question: "Found .planning/ directories nearby. This can cause confusion. How to proceed?"
+   - Display the found paths in the question text
+   - options:
+     - "Delete orphaned" -- Remove the nearby .planning/ directories and continue initialization
+     - "Ignore" -- Keep them and continue (may cause confusion later)
+     - "Cancel" -- Stop initialization, let me sort this out manually
+
+   **If "Delete orphaned":**
+   - Delete each found `.planning/` directory (confirm each path before deleting)
+   - Continue to next step
+
+   **If "Ignore":** Continue to next step.
+
+   **If "Cancel":** Exit command.
+
+3. **Check existing git files:**
    ```bash
    HAS_LOCAL_GIT=$([ -d .git ] && echo "yes")
    HAS_GITIGNORE=$([ -f .gitignore ] && echo "yes")
