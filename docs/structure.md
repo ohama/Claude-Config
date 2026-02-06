@@ -9,7 +9,8 @@
 ├── commands/               # 슬래시 명령어
 │   ├── gsd/                # GSD 명령어 (27개)
 │   ├── howto.md            # 개발 지식 기록 명령어
-│   └── mdbook.md           # mdBook 문서 사이트 설정
+│   ├── mdbook.md           # mdBook 로컬 빌드 (CI 없이 직접 커밋)
+│   └── pages.md            # mdBook + GitHub Pages CI 설정
 ├── skills/                 # 방법론 및 패턴
 │   ├── gsd/                # GSD 스킬 (11개)
 │   ├── mdbook-docs-images.skill.md      # mdBook 문서·이미지 규칙
@@ -101,7 +102,8 @@ Claude Code 통합 설정:
 - `commit.md` - Git 초기화, .gitignore 관리, 스마트 커밋
 - `current.md` - 프로젝트 현황 요약 (current phase/plan 상세)
 - `howto.md` - 개발 지식 기록 및 관리
-- `mdbook.md` - mdBook 문서 사이트 설정 및 GitHub Pages 배포
+- `mdbook.md` - mdBook 로컬 빌드 (CI 없이 직접 커밋)
+- `pages.md` - mdBook 설정 및 GitHub Pages CI 배포
 - `push.md` - Git 푸시 (안전 모드, 태그, PR 지원)
 - `release.md` - 버전 업그레이드, CHANGELOG 작성, 릴리스 커밋
 - `submodule.md` - Git submodule 최신화

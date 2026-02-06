@@ -89,17 +89,16 @@ Git submodule을 최신 버전으로 업데이트합니다.
 
 ---
 
-### `/mdbook`
+### `/pages`
 
-mdBook 문서 사이트를 설정합니다. 지정 디렉토리를 mdBook 프로젝트로 구성하고 docs/에 빌드합니다.
+mdBook 프로젝트를 설정하고 GitHub Pages 배포를 준비한다. CI에서 자동 빌드.
 
 | 사용법 | 설명 |
 |--------|------|
-| `/mdbook <dir>` | 지정 디렉토리를 mdBook으로 구성 (최초 설정 또는 SUMMARY 업데이트) |
-| `/mdbook` | 대화형 설정 시작 (디렉토리 질문 포함) |
-| `/mdbook init <dir>` | 기본값으로 빠른 초기화 (빈 템플릿) |
-| `/mdbook build <dir>` | 빌드만 실행 |
-| `/mdbook serve <dir>` | 로컬 개발 서버 |
+| `/pages <dir>` | 단일 디렉토리를 mdBook으로 구성 + CI 설정 |
+| `/pages <dir1> <dir2> ...` | 다중 디렉토리를 하나의 mdBook으로 통합 + CI 설정 |
+| `/pages` | 대화형 설정 시작 (디렉토리 질문 포함) |
+| `/pages init <dir>` | 기본값으로 빠른 초기화 (빈 템플릿) |
 
 **아키텍처:** `<dir>` 자체가 mdBook 프로젝트 (별도 book/ 디렉토리 없음, `src = "."`)
 
@@ -108,11 +107,24 @@ mdBook 문서 사이트를 설정합니다. 지정 디렉토리를 mdBook 프로
 - `<dir>/SUMMARY.md` - 목차
 - `<dir>/introduction.md` - 소개 페이지
 
-**빌드 출력:**
-- `docs/` - 빌드된 HTML (GitHub Pages용)
-- `.github/workflows/mdbook.yml` - 자동 빌드
+**CI 설정:**
+- `.github/workflows/mdbook.yml` - push 시 자동 빌드 후 docs/에 커밋
 
 **재실행 시:** book.toml이 있으면 업데이트 모드 (SUMMARY.md 동기화)
+
+---
+
+### `/mdbook`
+
+mdBook 로컬 빌드. CI 없이 직접 docs/를 생성하고 커밋한다.
+
+| 사용법 | 설명 |
+|--------|------|
+| `/mdbook build [dir]` | 로컬 빌드 |
+| `/mdbook serve [dir]` | 로컬 개발 서버 |
+| `/mdbook clean [dir]` | 빌드 출력 정리 |
+
+**인자 생략 시:** 프로젝트에서 book.toml을 자동 탐지
 
 ---
 
