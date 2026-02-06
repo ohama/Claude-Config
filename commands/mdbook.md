@@ -15,18 +15,19 @@ mdBook 문서 사이트 설정 도우미. 지정 디렉토리를 mdBook 프로�
 
 | 명령 | 설명 |
 |------|------|
-| `/mdbook <dir>` | 지정 디렉토리를 mdBook으로 구성 (최초 설정 또는 SUMMARY 업데이트) |
+| `/mdbook <dir>` | 단일 디렉토리를 mdBook으로 구성 |
+| `/mdbook <dir1> <dir2> ...` | 다중 디렉토리를 하나의 mdBook으로 통합 |
 | `/mdbook` | 대화형 설정 시작 (디렉토리 질문 포함) |
 | `/mdbook init <dir>` | 기본값으로 빠른 초기화 (빈 템플릿) |
-| `/mdbook build <dir>` | 빌드만 실행 |
-| `/mdbook clean <dir>` | 빌드 출력 정리 (docs/ 삭제) |
-| `/mdbook serve <dir>` | 로컬 개발 서버 |
+| `/mdbook build [dir]` | 빌드만 실행 |
+| `/mdbook clean [dir]` | 빌드 출력 정리 (docs/ 삭제) |
+| `/mdbook serve [dir]` | 로컬 개발 서버 |
 
 </commands>
 
 <architecture>
 
-## 디렉토리 구조
+## 단일 디렉토리 모드
 
 **별도 book/ 디렉토리를 만들지 않는다.** `<dir>` 자체가 mdBook 프로젝트가 된다.
 
@@ -62,12 +63,77 @@ docs/                      ← 빌드 출력 (프로젝트 루트)
 src = "."       # ← 별도 src/ 없이 디렉토리 자체를 소스로
 ```
 
-### 장점
+---
+
+## 다중 디렉토리 모드
+
+`/mdbook tutorial youtube` 처럼 2개 이상의 디렉토리를 지정하면, **프로젝트 루트에 통합 mdBook**을 생성한다.
+
+### 최초 설정 전 (사용자의 원본)
+
+```
+repo/
+├─ tutorial/
+│  ├─ 01-overview.md
+│  └─ 02-settings.md
+└─ youtube/
+   ├─ ep01.md
+   └─ ep02.md
+```
+
+### 최초 설정 후 (프로젝트 루트에 mdBook 파일 추가)
+
+```
+repo/
+├─ book.toml              ← 프로젝트 루트에 추가 (src = ".")
+├─ SUMMARY.md             ← 모든 디렉토리를 섹션으로 참조
+├─ introduction.md        ← 랜딩 페이지
+├─ tutorial/
+│  ├─ 01-overview.md      ← 원본 그대로
+│  └─ 02-settings.md
+├─ youtube/
+│  ├─ ep01.md             ← 원본 그대로
+│  └─ ep02.md
+└─ docs/                  ← 통합 빌드 출력
+```
+
+### SUMMARY.md 구조 (다중 디렉토리)
+
+각 디렉토리가 섹션(`#`)이 되고, 하위 .md 파일이 챕터(`-`)가 된다:
+
+```markdown
+# Summary
+
+[소개](introduction.md)
+
+# Tutorial
+
+- [Overview](tutorial/01-overview.md)
+- [Settings](tutorial/02-settings.md)
+
+# YouTube
+
+- [Episode 01](youtube/ep01.md)
+- [Episode 02](youtube/ep02.md)
+```
+
+### book.toml 핵심 설정 (다중 디렉토리)
+
+```toml
+[book]
+src = "."       # 프로젝트 루트 전체를 소스로
+
+[build]
+build-dir = "docs"   # 루트 기준이므로 상대경로 없음
+```
+
+---
+
+## 공통 장점
 
 - **파일 복사 없음** — 원본이 곧 mdBook 소스
 - **수정 즉시 반영** — 파일 편집 → `mdbook build` → 끝
 - **동기화 불필요** — 파일이 한 벌이므로 상태 추적 최소화
-- **추가되는 파일 3개만** — book.toml, SUMMARY.md, introduction.md
 
 </architecture>
 
@@ -91,26 +157,41 @@ mdbook이 설치되어 있지 않습니다.
   sudo apt install mdbook  # Ubuntu
 ```
 
-## Step 2: 디렉토리 결정 및 기존 설정 확인
+## Step 2: 모드 결정 (단일 vs 다중 디렉토리)
 
-### 디렉토리 결정
+### 인자 파싱
 
-**인자로 디렉토리가 주어진 경우** (`/mdbook <dir>`):
-- `{DIR}` = 주어진 디렉토리
-- 디렉토리 존재 확인: `[ -d "{DIR}" ]`
-- 없으면 오류 출력 후 중단
+```
+/mdbook tutorial           → 단일 모드: DIRS = ["tutorial"]
+/mdbook tutorial youtube   → 다중 모드: DIRS = ["tutorial", "youtube"]
+/mdbook                    → 대화형: AskUserQuestion으로 디렉토리 질문
+```
 
-**인자 없이 실행된 경우** (`/mdbook`):
-- AskUserQuestion으로 디렉토리 질문
-- 옵션: 기존 폴더 경로 입력 / 새 폴더 생성
+**다중 디렉토리 모드 조건:** 인자가 2개 이상이고, 모두 존재하는 디렉토리
+
+### 디렉토리 존재 확인
+
+```bash
+for dir in {DIRS}; do
+  [ -d "$dir" ] || echo "NOT_FOUND: $dir"
+done
+```
+
+없는 디렉토리가 있으면 오류 출력 후 중단.
 
 ### 기존 설정 확인
 
+**단일 모드:**
 ```bash
 [ -f "{DIR}/book.toml" ] && echo "ALREADY_CONFIGURED"
 ```
 
-**book.toml이 있는 경우 → 업데이트 모드 (Step 7로 이동):**
+**다중 모드:**
+```bash
+[ -f "book.toml" ] && echo "ALREADY_CONFIGURED"  # 프로젝트 루트 확인
+```
+
+**book.toml이 있는 경우 → 업데이트 모드 (Step 8로 이동):**
 
 이미 mdBook 프로젝트가 구성되어 있으므로:
 1. 현재 SUMMARY.md와 디렉토리의 .md 파일 목록을 비교
@@ -121,12 +202,21 @@ mdbook이 설치되어 있지 않습니다.
 
 ## Step 3: 소스 파일 스캔
 
+**단일 모드:**
 ```bash
 ls {DIR}/*.md 2>/dev/null
 ```
 
-- .md 파일 목록 표시
-- .md 파일이 없으면 경고 (빈 템플릿으로 진행할지 질문)
+**다중 모드:**
+```bash
+for dir in {DIRS}; do
+  echo "=== $dir ==="
+  ls "$dir"/*.md 2>/dev/null
+done
+```
+
+- 각 디렉토리별 .md 파일 목록 표시
+- .md 파일이 없는 디렉토리가 있으면 경고
 
 ## Step 4: 프로젝트 정보 수집
 
@@ -144,9 +234,11 @@ AskUserQuestion으로 수집:
 
 ## Step 5: mdBook 파일 생성
 
+### 단일 모드
+
 `{DIR}/` 안에 3개 파일을 생성한다.
 
-### book.toml
+#### book.toml (단일 모드)
 
 ```toml
 [book]
@@ -183,7 +275,7 @@ edit-url-template = "{REPO_URL}/edit/master/{DIR}/{path}"
 - `{DIR}`이 2단계 하위 (`src/docs/`) → `"../../docs"`
 - `{DIR}`이 프로젝트 루트 자체 (`.`) → `"docs"` (하위로)
 
-### SUMMARY.md
+#### SUMMARY.md (단일 모드)
 
 기존 .md 파일을 스캔하여 목차를 생성한다:
 - 각 .md 파일의 첫 번째 `#` 헤더를 제목으로 추출
@@ -202,18 +294,7 @@ edit-url-template = "{REPO_URL}/edit/master/{DIR}/{path}"
 - [Commands (슬래시 명령어)](03-commands.md)
 ```
 
-기존 .md 파일이 없으면 (빈 템플릿):
-```markdown
-# Summary
-
-[소개](introduction.md)
-
-# 시작하기
-
-- [Chapter 1](chapter-01.md)
-```
-
-### introduction.md
+#### introduction.md (단일 모드)
 
 ```markdown
 # {TITLE}
@@ -223,6 +304,85 @@ edit-url-template = "{REPO_URL}/edit/master/{DIR}/{path}"
 ## 시작하기
 
 [Chapter 1]({FIRST_CHAPTER_FILE})부터 시작하세요.
+```
+
+---
+
+### 다중 모드
+
+**프로젝트 루트**에 3개 파일을 생성한다.
+
+#### book.toml (다중 모드)
+
+```toml
+[book]
+title = "{TITLE}"
+authors = ["{AUTHOR}"]
+language = "{LANG}"
+description = "{DESCRIPTION}"
+src = "."
+
+[build]
+build-dir = "docs"
+create-missing = false
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+{GIT_REPO_CONFIG}
+
+[output.html.search]
+enable = true
+limit-results = 30
+boost-title = 2
+boost-hierarchy = 1
+```
+
+**GIT_REPO_CONFIG** (repo URL 있을 때만):
+```toml
+git-repository-url = "{REPO_URL}"
+edit-url-template = "{REPO_URL}/edit/master/{path}"
+```
+
+#### SUMMARY.md (다중 모드)
+
+각 디렉토리가 섹션(`#`)이 되고, 하위 .md 파일이 챕터가 된다:
+
+```markdown
+# Summary
+
+[소개](introduction.md)
+
+# {DIR1_TITLE}
+
+- [{CHAPTER1_TITLE}]({DIR1}/01-file.md)
+- [{CHAPTER2_TITLE}]({DIR1}/02-file.md)
+
+# {DIR2_TITLE}
+
+- [{CHAPTER1_TITLE}]({DIR2}/ep01.md)
+- [{CHAPTER2_TITLE}]({DIR2}/ep02.md)
+```
+
+**섹션 제목 결정:**
+1. 디렉토리 내 첫 번째 .md 파일의 `#` 헤더에서 추출 시도
+2. 없으면 디렉토리명을 Title Case로 변환 (예: `youtube` → `YouTube`)
+
+**챕터 제목 결정:**
+- 각 .md 파일의 첫 번째 `#` 헤더를 제목으로 추출
+- 없으면 파일명 사용
+
+#### introduction.md (다중 모드)
+
+```markdown
+# {TITLE}
+
+{DESCRIPTION}
+
+## 목차
+
+- [{DIR1_TITLE}]({DIR1}/01-file.md)
+- [{DIR2_TITLE}]({DIR2}/ep01.md)
 ```
 
 ## Step 6: docs/ 충돌 처리
@@ -242,9 +402,16 @@ docs/ 폴더가 이미 존재합니다.
 
 ## Step 7: 빌드
 
+**단일 모드:**
 ```bash
 mdbook clean {DIR}
 mdbook build {DIR}
+```
+
+**다중 모드:**
+```bash
+mdbook clean .
+mdbook build .
 ```
 
 **참고:** `mdbook clean`은 이전 빌드 출력을 삭제하여 삭제된 챕터의 잔여 HTML 파일이 남지 않도록 한다.
@@ -254,9 +421,10 @@ mdbook build {DIR}
 book.toml이 이미 있어서 Step 2에서 여기로 온 경우:
 
 1. 현재 SUMMARY.md를 파싱하여 등록된 .md 파일 목록 추출
-2. 디렉토리의 실제 .md 파일 목록과 비교
+2. 디렉토리의 실제 .md 파일 목록과 비교 (다중 모드에서는 모든 디렉토리 스캔)
 3. 차이가 있으면 표시:
 
+**단일 모드:**
 ```
 SUMMARY.md 동기화:
 
@@ -266,7 +434,21 @@ SUMMARY.md 동기화:
 SUMMARY.md를 업데이트할까요? [Y/N]
 ```
 
-**비교 제외 대상:** SUMMARY.md, introduction.md, book.toml (mdBook 자체 파일)
+**다중 모드:**
+```
+SUMMARY.md 동기화:
+
+tutorial/:
+  + 08-appendix.md    (새 파일)
+
+youtube/:
+  + ep03.md           (새 파일)
+  - old-ep.md         (파일 없음)
+
+SUMMARY.md를 업데이트할까요? [Y/N]
+```
+
+**비교 제외 대상:** SUMMARY.md, introduction.md, book.toml, README.md (mdBook 자체 파일)
 
 4. Y 선택 시:
    - 새 파일: SUMMARY.md의 적절한 섹션에 추가 (파일의 첫 # 헤더를 제목으로)
@@ -275,9 +457,16 @@ SUMMARY.md를 업데이트할까요? [Y/N]
 
 5. N 선택 시 또는 차이 없으면: 빌드만 실행
 
+**단일 모드:**
 ```bash
 mdbook clean {DIR}
 mdbook build {DIR}
+```
+
+**다중 모드:**
+```bash
+mdbook clean .
+mdbook build .
 ```
 
 ## Step 9: GitHub Pages 설정 (최초 설정 시만)
@@ -290,7 +479,7 @@ Step 2에서 book.toml이 없어 최초 설정으로 진행한 경우에만 실�
 touch docs/.nojekyll
 ```
 
-### GitHub Actions 워크플로우
+### GitHub Actions 워크플로우 (단일 모드)
 
 ```yaml
 # .github/workflows/mdbook.yml
@@ -330,6 +519,68 @@ jobs:
         run: |
           mdbook clean {DIR}
           mdbook build {DIR}
+
+      - name: Check for changes
+        id: check
+        run: |
+          git add docs/
+          git diff --cached --quiet || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.check.outputs.changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "docs: rebuild mdBook site"
+          git push
+```
+
+### GitHub Actions 워크플로우 (다중 모드)
+
+다중 모드에서는 모든 소스 디렉토리와 루트 mdBook 파일을 감시한다:
+
+```yaml
+# .github/workflows/mdbook.yml
+name: Build mdBook
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'book.toml'
+      - 'SUMMARY.md'
+      - 'introduction.md'
+      - '{DIR1}/**'
+      - '{DIR2}/**'
+  workflow_dispatch:
+
+concurrency:
+  group: mdbook-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: 'latest'
+
+      - name: Build mdBook
+        run: |
+          mdbook clean .
+          mdbook build .
 
       - name: Check for changes
         id: check
@@ -443,34 +694,55 @@ mdbook build {DIR} 완료.
 mdbook build {DIR}
 ```
 
-## /mdbook build <dir>
+## /mdbook build [dir]
 
-빌드만 실행:
+빌드만 실행.
+
+**단일 모드 (`/mdbook build tutorial`):**
 ```bash
-mdbook clean {DIR}
-mdbook build {DIR}
+mdbook clean tutorial
+mdbook build tutorial
 ```
 
-`{DIR}` 생략 시:
-- 현재 디렉토리에 book.toml이 있으면 `.`으로 빌드
-- 없으면 book.toml을 가진 하위 디렉토리를 자동 탐지
+**다중 모드 (프로젝트 루트에 book.toml이 있는 경우):**
+```bash
+mdbook clean .
+mdbook build .
+```
 
-## /mdbook clean <dir>
+**자동 탐지 (`/mdbook build` - 인자 없이):**
+1. 현재 디렉토리에 book.toml이 있으면 `.`으로 빌드
+2. 없으면 book.toml을 가진 하위 디렉토리를 자동 탐지
+
+## /mdbook clean [dir]
 
 빌드 출력 정리 (stale 파일 제거):
+
+**단일 모드:**
 ```bash
 mdbook clean {DIR}
+```
+
+**다중 모드:**
+```bash
+mdbook clean .
 ```
 
 - book.toml의 `build-dir`에 해당하는 디렉토리를 삭제
 - 챕터 삭제 후 남은 잔여 HTML 파일 정리에 유용
-- `{DIR}` 생략 시: `/mdbook build`와 동일한 자동 탐지 규칙 적용
 
-## /mdbook serve <dir>
+## /mdbook serve [dir]
 
 로컬 개발 서버:
+
+**단일 모드:**
 ```bash
 mdbook serve {DIR} --open
+```
+
+**다중 모드:**
+```bash
+mdbook serve . --open
 ```
 
 </subcommands>
@@ -545,6 +817,63 @@ Claude: my-docs/ 생성, 기본값으로 초기화
 ## 완료
 - my-docs/ (3 files)
 - docs/ (4 HTML files)
+```
+
+---
+
+### 예시 5: 다중 디렉토리 최초 설정
+
+```
+User: /mdbook tutorial youtube
+
+Claude: 다중 디렉토리 모드 감지
+
+=== tutorial ===
+- 01-overview.md
+- 02-settings.md
+
+=== youtube ===
+- ep01.md
+- ep02.md
+
+[프로젝트 정보 질문 → 답변]
+
+프로젝트 루트에 추가:
+- book.toml (src = ".")
+- SUMMARY.md (2 sections, 4 chapters)
+- introduction.md
+
+## 완료
+- 프로젝트 루트 (3 files 추가)
+- tutorial/ (2 files 유지)
+- youtube/ (2 files 유지)
+- docs/ (8 HTML files)
+
+`mdbook serve .`으로 미리보기하세요.
+```
+
+### 예시 6: 다중 디렉토리 업데이트
+
+```
+User: /mdbook tutorial youtube
+
+Claude: book.toml 발견 — 다중 디렉토리 업데이트 모드
+
+SUMMARY.md 동기화:
+
+tutorial/:
+  (변경 없음)
+
+youtube/:
+  + ep03.md    (새 파일)
+
+SUMMARY.md를 업데이트할까요? [Y/N]
+
+User: Y
+
+## 업데이트 완료
+- SUMMARY.md에 youtube/ep03.md 추가
+- docs/ 재생성 완료
 ```
 
 </examples>
