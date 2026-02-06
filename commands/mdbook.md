@@ -24,12 +24,16 @@ mdBook 로컬 빌드 도우미. 로컬에서 직접 HTML을 생성하고 docs/�
 
 | 명령 | 설명 |
 |------|------|
-| `/mdbook init <dir>` | 단일 디렉토리 초기화 (CI 없이) |
-| `/mdbook init <dir1> <dir2> ...` | 다중 디렉토리 통합 초기화 (CI 없이) |
-| `/mdbook build [dir]` | 로컬 빌드 |
+| `/mdbook <dir>` | 단일 디렉토리 (자동: init 또는 sync+build) |
+| `/mdbook <dir1> <dir2> ...` | 다중 디렉토리 통합 (자동: init 또는 sync+build) |
+| `/mdbook build [dir]` | 로컬 빌드만 |
 | `/mdbook serve [dir]` | 로컬 개발 서버 |
 | `/mdbook clean [dir]` | 빌드 출력 정리 |
 | `/mdbook sync [dir]` | SUMMARY.md 동기화 (빌드 없이) |
+
+**자동 모드 동작:**
+- book.toml 없음 → init (초기화)
+- book.toml 있음 → sync + build (업데이트)
 
 **CI 자동 빌드가 필요하면 `/pages` 커맨드 사용:**
 - `/pages <dir>` — mdBook 구성 + GitHub Actions 워크플로우 생성
@@ -51,18 +55,35 @@ mdBook 로컬 빌드 도우미. 로컬에서 직접 HTML을 생성하고 docs/�
 1. 프로젝트 루트 확인: `[ -f "book.toml" ]`
 2. 하위 디렉토리 탐색: `find . -maxdepth 2 -name "book.toml"`
 
-**book.toml이 없으면:**
-```
-book.toml을 찾을 수 없습니다.
+---
 
-설정하려면:
-  /mdbook init <dir>  — 로컬 전용
-  /pages <dir>        — CI 자동 빌드
+## /mdbook <dir> [dir2] ...
+
+**자동 모드**: book.toml 유무에 따라 init 또는 update 동작.
+
+### Step 0: 모드 결정
+
 ```
+/mdbook tutorial           → 단일 모드
+/mdbook tutorial youtube   → 다중 모드
+```
+
+**단일 모드:**
+```bash
+[ -f "{DIR}/book.toml" ] && echo "UPDATE_MODE" || echo "INIT_MODE"
+```
+
+**다중 모드:**
+```bash
+[ -f "book.toml" ] && echo "UPDATE_MODE" || echo "INIT_MODE"
+```
+
+- **INIT_MODE** → "Init 모드" 섹션으로 이동
+- **UPDATE_MODE** → "Update 모드" 섹션으로 이동
 
 ---
 
-## /mdbook init <dir> [dir2] ...
+## Init 모드 (book.toml 없음)
 
 mdBook 프로젝트를 초기화한다. CI 워크플로우 없이 로컬 빌드 전용.
 
@@ -70,19 +91,11 @@ mdBook 프로젝트를 초기화한다. CI 워크플로우 없이 로컬 빌드 
 
 `mdbook-utils` 스킬의 "1. mdbook 설치 확인" 참조.
 
-### Step 2: 모드 결정
-
-```
-/mdbook init tutorial           → 단일 모드
-/mdbook init tutorial youtube   → 다중 모드
-```
-
-### Step 3: 디렉토리 확인
+### Step 2: 디렉토리 확인
 
 **단일 모드:**
 ```bash
 [ -d "{DIR}" ] || echo "NOT_FOUND"
-[ -f "{DIR}/book.toml" ] && echo "ALREADY_EXISTS"
 ```
 
 **다중 모드:**
@@ -90,13 +103,11 @@ mdBook 프로젝트를 초기화한다. CI 워크플로우 없이 로컬 빌드 
 for dir in {DIRS}; do
   [ -d "$dir" ] || echo "NOT_FOUND: $dir"
 done
-[ -f "book.toml" ] && echo "ALREADY_EXISTS"  # 프로젝트 루트 확인
 ```
 
 - 디렉토리가 없으면 생성 여부 질문
-- book.toml이 이미 있으면 중단
 
-### Step 4: 소스 파일 스캔
+### Step 3: 소스 파일 스캔
 
 **단일 모드:**
 ```bash
@@ -111,7 +122,7 @@ for dir in {DIRS}; do
 done
 ```
 
-### Step 5: 프로젝트 정보 수집
+### Step 4: 프로젝트 정보 수집
 
 AskUserQuestion으로 수집:
 
@@ -120,7 +131,7 @@ AskUserQuestion으로 수집:
 - 언어 (기본값: ko)
 - 설명 (한 줄)
 
-### Step 6: 파일 생성
+### Step 5: 파일 생성
 
 #### 단일 모드
 
@@ -239,7 +250,7 @@ limit-results = 30
 - [YouTube](youtube/ep01.md)
 ```
 
-### Step 7: README.md에 Book 링크 추가/업데이트
+### Step 6: README.md에 Book 링크 추가/업데이트
 
 프로젝트 루트에 `README.md`가 있으면 로컬 docs/ 링크를 추가하거나 업데이트한다.
 
@@ -277,7 +288,21 @@ limit-results = 30
 
 **README.md가 없는 경우:** 건너뛴다.
 
-### Step 8: 결과 출력
+### Step 7: 빌드 실행
+
+Init 후 자동으로 빌드한다.
+
+```bash
+mdbook build {DIR}
+```
+
+### Step 8: .nojekyll 확인
+
+```bash
+[ -f "docs/.nojekyll" ] || touch docs/.nojekyll
+```
+
+### Step 9: 결과 출력
 
 **단일 모드:**
 ```
@@ -288,9 +313,12 @@ limit-results = 30
 - SUMMARY.md
 - introduction.md
 
+빌드 완료:
+- docs/ ({N} HTML files)
+
 다음 단계:
   /mdbook serve {DIR}  — 미리보기
-  /mdbook build {DIR}  — 빌드
+  /commit              — 변경사항 커밋
 ```
 
 **다중 모드:**
@@ -302,9 +330,80 @@ limit-results = 30
 - SUMMARY.md (2 sections)
 - introduction.md
 
+빌드 완료:
+- docs/ ({N} HTML files)
+
 다음 단계:
   /mdbook serve .  — 미리보기
-  /mdbook build .  — 빌드
+  /commit          — 변경사항 커밋
+```
+
+---
+
+## Update 모드 (book.toml 있음)
+
+기존 mdBook 프로젝트를 업데이트한다. SUMMARY.md 동기화 후 빌드.
+
+### Step 1: SUMMARY.md 동기화
+
+`mdbook-utils` 스킬의 "3. SUMMARY.md 동기화" 참조.
+
+1. SUMMARY.md에서 링크된 .md 파일 추출
+2. 디렉토리의 실제 .md 파일 목록과 비교
+3. 차이가 있으면 표시:
+
+```
+SUMMARY.md 동기화:
+
+  + ep08-new.md         (새 파일)
+  - old-chapter.md      (파일 없음)
+
+SUMMARY.md를 업데이트할까요? [Y/N]
+```
+
+4. Y 선택 시 SUMMARY.md 업데이트
+5. N 선택 시 또는 차이 없으면 다음 단계로
+
+### Step 2: 빌드 실행
+
+```bash
+mdbook clean {DIR}
+mdbook build {DIR}
+```
+
+### Step 3: .nojekyll 확인
+
+```bash
+[ -f "docs/.nojekyll" ] || touch docs/.nojekyll
+```
+
+### Step 4: 결과 출력
+
+**변경 있음:**
+```
+## mdBook 업데이트 완료
+
+### SUMMARY.md 변경
+  + ep08-new.md 추가
+  - old-chapter.md 제거
+
+### 빌드
+docs/ ({N} HTML files)
+
+다음 단계:
+  /commit  — 변경사항 커밋
+```
+
+**변경 없음:**
+```
+## mdBook 빌드 완료
+
+SUMMARY.md와 파일 목록이 일치합니다.
+
+docs/ ({N} HTML files)
+
+다음 단계:
+  /commit  — 변경사항 커밋
 ```
 
 ---
@@ -461,17 +560,21 @@ SUMMARY.md와 파일 목록이 일치합니다.
 
 <examples>
 
-### 예시 1: 단일 디렉토리 초기화
+### 예시 1: 단일 디렉토리 초기화 (book.toml 없음)
 
 ```
-User: /mdbook init tutorial
+User: /mdbook tutorial
 
-Claude: tutorial/ 스캔 결과:
+Claude: book.toml 없음 → Init 모드
+
+tutorial/ 스캔 결과:
 - 01-overview.md
 - 02-settings.md
 - 03-commands.md
 
 [프로젝트 정보 질문 → 답변]
+
+mdbook build tutorial
 
 ## mdBook 초기화 완료
 
@@ -480,17 +583,20 @@ tutorial/ 에 추가된 파일:
 - SUMMARY.md
 - introduction.md
 
+빌드 완료:
+- docs/ (15 HTML files)
+
 다음 단계:
   /mdbook serve tutorial  — 미리보기
-  /mdbook build tutorial  — 빌드
+  /commit                 — 변경사항 커밋
 ```
 
-### 예시 2: 다중 디렉토리 초기화
+### 예시 2: 다중 디렉토리 초기화 (book.toml 없음)
 
 ```
-User: /mdbook init tutorial youtube
+User: /mdbook tutorial youtube
 
-Claude: 다중 디렉토리 모드
+Claude: book.toml 없음 → Init 모드 (다중)
 
 === tutorial ===
 - 01-overview.md
@@ -502,6 +608,8 @@ Claude: 다중 디렉토리 모드
 
 [프로젝트 정보 질문 → 답변]
 
+mdbook build .
+
 ## mdBook 초기화 완료
 
 프로젝트 루트에 추가된 파일:
@@ -509,12 +617,59 @@ Claude: 다중 디렉토리 모드
 - SUMMARY.md (2 sections)
 - introduction.md
 
+빌드 완료:
+- docs/ (25 HTML files)
+
 다음 단계:
   /mdbook serve .  — 미리보기
-  /mdbook build .  — 빌드
+  /commit          — 변경사항 커밋
 ```
 
-### 예시 3: 빌드
+### 예시 3: 업데이트 (book.toml 있음, 변경 있음)
+
+```
+User: /mdbook tutorial youtube
+
+Claude: book.toml 발견 → Update 모드
+
+SUMMARY.md 동기화:
+
+  + youtube/ep08-new.md    (새 파일)
+
+SUMMARY.md를 업데이트할까요? [Y/N]
+
+User: Y
+
+## mdBook 업데이트 완료
+
+### SUMMARY.md 변경
+  + youtube/ep08-new.md 추가
+
+### 빌드
+docs/ (25 HTML files)
+
+다음 단계:
+  /commit  — 변경사항 커밋
+```
+
+### 예시 4: 업데이트 (book.toml 있음, 변경 없음)
+
+```
+User: /mdbook tutorial youtube
+
+Claude: book.toml 발견 → Update 모드
+
+## mdBook 빌드 완료
+
+SUMMARY.md와 파일 목록이 일치합니다.
+
+docs/ (25 HTML files)
+
+다음 단계:
+  /commit  — 변경사항 커밋
+```
+
+### 예시 5: 빌드만
 
 ```
 User: /mdbook build tutorial
@@ -533,7 +688,7 @@ docs/ (15 HTML files)
   git push
 ```
 
-### 예시 4: 자동 탐지 빌드
+### 예시 6: 자동 탐지 빌드
 
 ```
 User: /mdbook build
@@ -548,7 +703,7 @@ mdbook build tutorial
 docs/ (15 HTML files)
 ```
 
-### 예시 5: 개발 서버
+### 예시 7: 개발 서버
 
 ```
 User: /mdbook serve tutorial
@@ -562,20 +717,7 @@ http://localhost:3000 에서 미리보기하세요.
 Ctrl+C로 종료합니다.
 ```
 
-### 예시 6: book.toml 없음
-
-```
-User: /mdbook build
-
-Claude:
-book.toml을 찾을 수 없습니다.
-
-설정하려면:
-  /mdbook init <dir>  — 로컬 전용
-  /pages <dir>        — CI 자동 빌드
-```
-
-### 예시 7: SUMMARY 동기화
+### 예시 8: SUMMARY 동기화만
 
 ```
 User: /mdbook sync tutorial
@@ -599,7 +741,7 @@ SUMMARY.md 업데이트 완료.
 `/mdbook build tutorial` 로 빌드하세요.
 ```
 
-### 예시 8: 동기화 (변경 없음)
+### 예시 9: 동기화 (변경 없음)
 
 ```
 User: /mdbook sync
