@@ -13,7 +13,7 @@
 | `/howto 키워드` | 문서 검색 |
 | `/howto new 제목` | 새 문서 생성 |
 
-**문서 위치:** `documentation/howto/`
+**문서 위치:** `howto/`
 
 ---
 

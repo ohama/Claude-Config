@@ -138,7 +138,7 @@ N을 입력한 경우에만 취소.
 --- 분석된 그룹 ---
 1. src/components/ (3 files) - UI 컴포넌트 수정
 2. tests/ (2 files) - 테스트 추가
-3. documentation/ (1 file) - 문서 업데이트
+3. howto/ (1 file) - 문서 업데이트
 ```
 
 ## Step 7: 커밋 메시지 생성
@@ -171,7 +171,7 @@ git add tests/
 git commit -m "test: 인증 테스트 추가"
 
 # 그룹 3
-git add documentation/
+git add howto/
 git commit -m "docs: API 문서 업데이트"
 ```
 
