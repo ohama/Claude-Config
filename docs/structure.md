@@ -109,7 +109,7 @@ Claude Code 통합 설정:
 - `submodule.md` - Git submodule 최신화
 - `claude-config.md` - .claude/ submodule 관리
 
-### 4. `skills/` (12개 GSD 스킬 + 2개 프로젝트 스킬)
+### 4. `skills/` (12개 GSD 스킬 + 3개 프로젝트 스킬)
 
 에이전트가 참조하는 방법론 및 패턴:
 
@@ -117,6 +117,7 @@ Claude Code 통합 설정:
 
 | 스킬 | 용도 |
 |------|------|
+| `mdbook-utils` | mdBook 공통 유틸리티 (/pages, /mdbook 공유) |
 | `mdbook-docs-images` | mdBook 문서·이미지·구조 규칙 |
 | `markdown-image-insertion` | Markdown 이미지 삽입 규칙 |
 

@@ -20,7 +20,22 @@
 
 ---
 
-## 프로젝트 전용 스킬 (2개)
+## 프로젝트 전용 스킬 (3개)
+
+#### `mdbook-utils`
+
+mdBook 공통 유틸리티. `/pages`와 `/mdbook` 커맨드가 공유하는 로직.
+
+**사용 커맨드:** `/pages`, `/mdbook`
+
+**제공 기능:**
+- mdbook 설치 확인
+- book.toml 탐지 (단일/다중 모드)
+- SUMMARY.md 동기화
+- 빌드 명령 (`mdbook clean/build`)
+- .nojekyll 확인
+
+---
 
 #### `mdbook-docs-images`
 

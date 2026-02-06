@@ -123,8 +123,11 @@ mdBook 로컬 빌드. CI 없이 직접 docs/를 생성하고 커밋한다.
 | `/mdbook build [dir]` | 로컬 빌드 |
 | `/mdbook serve [dir]` | 로컬 개발 서버 |
 | `/mdbook clean [dir]` | 빌드 출력 정리 |
+| `/mdbook sync [dir]` | SUMMARY.md 동기화 (빌드 없이) |
 
 **인자 생략 시:** 프로젝트에서 book.toml을 자동 탐지
+
+**공통 로직:** `mdbook-utils` 스킬 참조
 
 ---
 
