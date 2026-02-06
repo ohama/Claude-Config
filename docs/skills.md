@@ -34,6 +34,7 @@ mdBook 공통 유틸리티. `/pages`와 `/mdbook` 커맨드가 공유하는 로�
 - SUMMARY.md 동기화
 - 빌드 명령 (`mdbook clean/build`)
 - .nojekyll 확인
+- README.md Documentation 섹션 업데이트
 
 ---
 

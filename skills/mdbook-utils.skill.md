@@ -119,3 +119,40 @@ GitHub Pages에서 Jekyll 처리를 건너뛰기 위해 필요:
 ```bash
 [ -f "docs/.nojekyll" ] || touch docs/.nojekyll
 ```
+
+---
+
+## 6. README.md Documentation 섹션 업데이트
+
+### 확인
+
+```bash
+[ -f "README.md" ] && echo "README_EXISTS"
+grep -q "^## Documentation" README.md && echo "SECTION_EXISTS"
+```
+
+### 섹션이 있는 경우 → 업데이트
+
+`## Documentation` 다음 줄부터 다음 `##` 전까지의 내용을 새 링크로 교체:
+
+```markdown
+## Documentation
+
+[{TITLE}]({LINK})
+```
+
+**링크 형식:**
+- `/pages`: `https://{user}.github.io/{repo}/` (GitHub Pages URL)
+- `/mdbook`: `docs/index.html` (로컬 경로)
+
+### 섹션이 없는 경우 → 추가
+
+README.md의 **첫 번째 `##` 헤딩 바로 앞**에 삽입:
+- `##`이 없으면 파일 끝에 추가
+
+```markdown
+## Documentation
+
+[{TITLE}]({LINK})
+
+```

@@ -16,6 +16,7 @@ mdBook 문서 사이트 설정 도우미. 지정 디렉토리를 mdBook 프로�
 - mdbook 설치 확인
 - book.toml 탐지
 - SUMMARY.md 동기화
+- README.md Documentation 섹션 업데이트
 </skills_reference>
 
 <commands>
@@ -527,9 +528,9 @@ jobs:
           git push
 ```
 
-## Step 8: README.md에 Book 링크 추가 (최초 설정 시만)
+## Step 8: README.md에 Book 링크 추가/업데이트
 
-프로젝트 루트에 `README.md`가 있으면 GitHub Pages 링크를 추가한다.
+프로젝트 루트에 `README.md`가 있으면 GitHub Pages 링크를 추가하거나 업데이트한다.
 
 ```bash
 [ -f "README.md" ] && echo "README_EXISTS"
@@ -540,14 +541,22 @@ jobs:
 1. GitHub repo URL에서 Pages URL을 유도한다:
    - `https://github.com/{user}/{repo}` → `https://{user}.github.io/{repo}/`
 
-2. README.md에 이미 동일한 링크가 있는지 확인한다:
+2. `## Documentation` 섹션이 있는지 확인한다:
    ```bash
-   grep -q "github.io/{REPO_NAME}" README.md
+   grep -q "^## Documentation" README.md
    ```
-   - 이미 있으면 건너뛰기
 
-3. 링크가 없으면 README.md의 **첫 번째 `##` 헤딩 바로 앞**에 Documentation 섹션을 삽입한다:
+3. **섹션이 있는 경우 → 업데이트:**
+   - `## Documentation` 다음 줄부터 다음 `##` 전까지의 내용을 새 링크로 교체
+   ```markdown
+   ## Documentation
 
+   [{TITLE}]({PAGES_URL})
+   ```
+
+4. **섹션이 없는 경우 → 추가:**
+   - README.md의 **첫 번째 `##` 헤딩 바로 앞**에 Documentation 섹션을 삽입
+   - `##`이 없으면 파일 끝에 추가
    ```markdown
    ## Documentation
 
@@ -555,10 +564,7 @@ jobs:
 
    ```
 
-   - 첫 번째 `##`을 찾아 그 직전 줄에 삽입
-   - `##`이 없으면 파일 끝에 추가
-
-4. GitHub repo URL이 없는 경우 (Step 4에서 미입력):
+5. GitHub repo URL이 없는 경우 (Step 4에서 미입력):
    - 이 단계를 건너뛴다
 
 **README.md가 없는 경우:** 건너뛴다.

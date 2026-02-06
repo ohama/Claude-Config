@@ -15,6 +15,7 @@ mdBook 로컬 빌드 도우미. 로컬에서 직접 HTML을 생성하고 docs/�
 - book.toml 탐지
 - SUMMARY.md 동기화
 - 빌드 명령
+- README.md Documentation 섹션 업데이트
 </skills_reference>
 
 <commands>
@@ -238,7 +239,42 @@ limit-results = 30
 - [YouTube](youtube/ep01.md)
 ```
 
-### Step 7: 결과 출력
+### Step 7: README.md에 Book 링크 추가/업데이트
+
+프로젝트 루트에 `README.md`가 있으면 로컬 docs/ 링크를 추가하거나 업데이트한다.
+
+```bash
+[ -f "README.md" ] && echo "README_EXISTS"
+```
+
+**README.md가 있는 경우:**
+
+1. `## Documentation` 섹션이 있는지 확인한다:
+   ```bash
+   grep -q "^## Documentation" README.md
+   ```
+
+2. **섹션이 있는 경우 → 업데이트:**
+   - `## Documentation` 다음 줄부터 다음 `##` 전까지의 내용을 새 링크로 교체
+   ```markdown
+   ## Documentation
+
+   [{TITLE}](docs/index.html)
+   ```
+
+3. **섹션이 없는 경우 → 추가:**
+   - README.md의 **첫 번째 `##` 헤딩 바로 앞**에 Documentation 섹션을 삽입
+   - `##`이 없으면 파일 끝에 추가
+   ```markdown
+   ## Documentation
+
+   [{TITLE}](docs/index.html)
+
+   ```
+
+**README.md가 없는 경우:** 건너뛴다.
+
+### Step 8: 결과 출력
 
 **단일 모드:**
 ```
