@@ -23,12 +23,13 @@ mdBook 로컬 빌드 도우미. 로컬에서 직접 HTML을 생성하고 docs/�
 
 | 명령 | 설명 |
 |------|------|
+| `/mdbook init <dir>` | mdBook 초기화 (CI 없이) |
 | `/mdbook build [dir]` | 로컬 빌드 |
 | `/mdbook serve [dir]` | 로컬 개발 서버 |
 | `/mdbook clean [dir]` | 빌드 출력 정리 |
 | `/mdbook sync [dir]` | SUMMARY.md 동기화 (빌드 없이) |
 
-**CI 기반 설정은 `/pages` 커맨드 사용:**
+**CI 자동 빌드가 필요하면 `/pages` 커맨드 사용:**
 - `/pages <dir>` — mdBook 구성 + GitHub Actions 워크플로우 생성
 
 </commands>
@@ -52,8 +53,121 @@ mdBook 로컬 빌드 도우미. 로컬에서 직접 HTML을 생성하고 docs/�
 ```
 book.toml을 찾을 수 없습니다.
 
-먼저 /pages 커맨드로 mdBook을 설정하세요:
-  /pages <dir>
+설정하려면:
+  /mdbook init <dir>  — 로컬 전용
+  /pages <dir>        — CI 자동 빌드
+```
+
+---
+
+## /mdbook init <dir>
+
+mdBook 프로젝트를 초기화한다. CI 워크플로우 없이 로컬 빌드 전용.
+
+### Step 1: mdbook 설치 확인
+
+`mdbook-utils` 스킬의 "1. mdbook 설치 확인" 참조.
+
+### Step 2: 디렉토리 확인
+
+```bash
+[ -d "{DIR}" ] || echo "NOT_FOUND"
+[ -f "{DIR}/book.toml" ] && echo "ALREADY_EXISTS"
+```
+
+- 디렉토리가 없으면 생성 여부 질문
+- book.toml이 이미 있으면 중단
+
+### Step 3: 소스 파일 스캔
+
+```bash
+ls {DIR}/*.md 2>/dev/null
+```
+
+기존 .md 파일 목록 표시.
+
+### Step 4: 프로젝트 정보 수집
+
+AskUserQuestion으로 수집:
+
+- 책 제목 (기본값: 디렉토리명)
+- 저자 이름 (기본값: `git config user.name`)
+- 언어 (기본값: ko)
+- 설명 (한 줄)
+
+### Step 5: 파일 생성
+
+`{DIR}/` 안에 3개 파일을 생성한다.
+
+#### book.toml
+
+```toml
+[book]
+title = "{TITLE}"
+authors = ["{AUTHOR}"]
+language = "{LANG}"
+description = "{DESCRIPTION}"
+src = "."
+
+[build]
+build-dir = "../docs"
+create-missing = false
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+
+[output.html.search]
+enable = true
+limit-results = 30
+```
+
+**build-dir 계산:**
+- 1단계 하위 (`tutorial/`) → `"../docs"`
+- 2단계 하위 (`src/docs/`) → `"../../docs"`
+
+#### SUMMARY.md
+
+기존 .md 파일을 스캔하여 목차 생성:
+- 각 .md 파일의 첫 `#` 헤더를 제목으로 추출
+- 파일명 순서대로 정렬
+
+```markdown
+# Summary
+
+[소개](introduction.md)
+
+# 본문
+
+- [Chapter 1](01-intro.md)
+- [Chapter 2](02-setup.md)
+```
+
+#### introduction.md
+
+```markdown
+# {TITLE}
+
+{DESCRIPTION}
+
+## 시작하기
+
+[Chapter 1]({FIRST_CHAPTER})부터 시작하세요.
+```
+
+### Step 6: 결과 출력
+
+```
+## mdBook 초기화 완료
+
+{DIR}/ 에 추가된 파일:
+- book.toml
+- SUMMARY.md
+- introduction.md
+
+다음 단계:
+  /mdbook serve {DIR}  — 미리보기
+  /mdbook build {DIR}  — 빌드
 ```
 
 ---
@@ -210,7 +324,31 @@ SUMMARY.md와 파일 목록이 일치합니다.
 
 <examples>
 
-### 예시 1: 빌드
+### 예시 1: 초기화 (로컬 전용)
+
+```
+User: /mdbook init tutorial
+
+Claude: tutorial/ 스캔 결과:
+- 01-overview.md
+- 02-settings.md
+- 03-commands.md
+
+[프로젝트 정보 질문 → 답변]
+
+## mdBook 초기화 완료
+
+tutorial/ 에 추가된 파일:
+- book.toml
+- SUMMARY.md
+- introduction.md
+
+다음 단계:
+  /mdbook serve tutorial  — 미리보기
+  /mdbook build tutorial  — 빌드
+```
+
+### 예시 2: 빌드
 
 ```
 User: /mdbook build tutorial
@@ -229,7 +367,7 @@ docs/ (15 HTML files)
   git push
 ```
 
-### 예시 2: 자동 탐지 빌드
+### 예시 3: 자동 탐지 빌드
 
 ```
 User: /mdbook build
@@ -244,7 +382,7 @@ mdbook build tutorial
 docs/ (15 HTML files)
 ```
 
-### 예시 3: 개발 서버
+### 예시 4: 개발 서버
 
 ```
 User: /mdbook serve tutorial
@@ -258,7 +396,7 @@ http://localhost:3000 에서 미리보기하세요.
 Ctrl+C로 종료합니다.
 ```
 
-### 예시 4: book.toml 없음
+### 예시 5: book.toml 없음
 
 ```
 User: /mdbook build
@@ -266,11 +404,12 @@ User: /mdbook build
 Claude:
 book.toml을 찾을 수 없습니다.
 
-먼저 /pages 커맨드로 mdBook을 설정하세요:
-  /pages <dir>
+설정하려면:
+  /mdbook init <dir>  — 로컬 전용
+  /pages <dir>        — CI 자동 빌드
 ```
 
-### 예시 5: SUMMARY 동기화
+### 예시 6: SUMMARY 동기화
 
 ```
 User: /mdbook sync tutorial
@@ -294,7 +433,7 @@ SUMMARY.md 업데이트 완료.
 `/mdbook build tutorial` 로 빌드하세요.
 ```
 
-### 예시 6: 동기화 (변경 없음)
+### 예시 7: 동기화 (변경 없음)
 
 ```
 User: /mdbook sync
