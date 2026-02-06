@@ -555,13 +555,16 @@ jobs:
    ```
 
 4. **섹션이 없는 경우 → 추가:**
-   - README.md의 **첫 번째 `##` 헤딩 바로 앞**에 Documentation 섹션을 삽입
-   - `##`이 없으면 파일 끝에 추가
+   - README.md의 **첫 번째 `#` 헤딩(제목) 바로 다음**에 Documentation 섹션을 삽입
+   - `#` 제목이 없으면 파일 맨 앞에 추가
    ```markdown
+   # Project Title
+
    ## Documentation
 
    [{TITLE}]({PAGES_URL})
 
+   ## Other Sections...
    ```
 
 5. GitHub repo URL이 없는 경우 (Step 4에서 미입력):

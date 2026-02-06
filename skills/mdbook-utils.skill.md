@@ -147,12 +147,16 @@ grep -q "^## Documentation" README.md && echo "SECTION_EXISTS"
 
 ### 섹션이 없는 경우 → 추가
 
-README.md의 **첫 번째 `##` 헤딩 바로 앞**에 삽입:
-- `##`이 없으면 파일 끝에 추가
+README.md의 **첫 번째 `#` 헤딩(제목) 바로 다음**에 삽입:
 
 ```markdown
+# Project Title
+
 ## Documentation
 
 [{TITLE}]({LINK})
 
+## Other Sections...
 ```
+
+- `#` 제목이 없으면 파일 맨 앞에 추가

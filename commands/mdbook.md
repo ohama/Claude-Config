@@ -263,13 +263,16 @@ limit-results = 30
    ```
 
 3. **섹션이 없는 경우 → 추가:**
-   - README.md의 **첫 번째 `##` 헤딩 바로 앞**에 Documentation 섹션을 삽입
-   - `##`이 없으면 파일 끝에 추가
+   - README.md의 **첫 번째 `#` 헤딩(제목) 바로 다음**에 Documentation 섹션을 삽입
+   - `#` 제목이 없으면 파일 맨 앞에 추가
    ```markdown
+   # Project Title
+
    ## Documentation
 
    [{TITLE}](docs/index.html)
 
+   ## Other Sections...
    ```
 
 **README.md가 없는 경우:** 건너뛴다.
