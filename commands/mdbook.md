@@ -23,7 +23,8 @@ mdBook 로컬 빌드 도우미. 로컬에서 직접 HTML을 생성하고 docs/�
 
 | 명령 | 설명 |
 |------|------|
-| `/mdbook init <dir>` | mdBook 초기화 (CI 없이) |
+| `/mdbook init <dir>` | 단일 디렉토리 초기화 (CI 없이) |
+| `/mdbook init <dir1> <dir2> ...` | 다중 디렉토리 통합 초기화 (CI 없이) |
 | `/mdbook build [dir]` | 로컬 빌드 |
 | `/mdbook serve [dir]` | 로컬 개발 서버 |
 | `/mdbook clean [dir]` | 빌드 출력 정리 |
@@ -60,7 +61,7 @@ book.toml을 찾을 수 없습니다.
 
 ---
 
-## /mdbook init <dir>
+## /mdbook init <dir> [dir2] ...
 
 mdBook 프로젝트를 초기화한다. CI 워크플로우 없이 로컬 빌드 전용.
 
@@ -68,39 +69,63 @@ mdBook 프로젝트를 초기화한다. CI 워크플로우 없이 로컬 빌드 
 
 `mdbook-utils` 스킬의 "1. mdbook 설치 확인" 참조.
 
-### Step 2: 디렉토리 확인
+### Step 2: 모드 결정
 
+```
+/mdbook init tutorial           → 단일 모드
+/mdbook init tutorial youtube   → 다중 모드
+```
+
+### Step 3: 디렉토리 확인
+
+**단일 모드:**
 ```bash
 [ -d "{DIR}" ] || echo "NOT_FOUND"
 [ -f "{DIR}/book.toml" ] && echo "ALREADY_EXISTS"
 ```
 
+**다중 모드:**
+```bash
+for dir in {DIRS}; do
+  [ -d "$dir" ] || echo "NOT_FOUND: $dir"
+done
+[ -f "book.toml" ] && echo "ALREADY_EXISTS"  # 프로젝트 루트 확인
+```
+
 - 디렉토리가 없으면 생성 여부 질문
 - book.toml이 이미 있으면 중단
 
-### Step 3: 소스 파일 스캔
+### Step 4: 소스 파일 스캔
 
+**단일 모드:**
 ```bash
 ls {DIR}/*.md 2>/dev/null
 ```
 
-기존 .md 파일 목록 표시.
+**다중 모드:**
+```bash
+for dir in {DIRS}; do
+  echo "=== $dir ==="
+  ls "$dir"/*.md 2>/dev/null
+done
+```
 
-### Step 4: 프로젝트 정보 수집
+### Step 5: 프로젝트 정보 수집
 
 AskUserQuestion으로 수집:
 
-- 책 제목 (기본값: 디렉토리명)
+- 책 제목 (기본값: 디렉토리명 또는 프로젝트명)
 - 저자 이름 (기본값: `git config user.name`)
 - 언어 (기본값: ko)
 - 설명 (한 줄)
 
-### Step 5: 파일 생성
+### Step 6: 파일 생성
+
+#### 단일 모드
 
 `{DIR}/` 안에 3개 파일을 생성한다.
 
-#### book.toml
-
+**book.toml:**
 ```toml
 [book]
 title = "{TITLE}"
@@ -126,12 +151,7 @@ limit-results = 30
 - 1단계 하위 (`tutorial/`) → `"../docs"`
 - 2단계 하위 (`src/docs/`) → `"../../docs"`
 
-#### SUMMARY.md
-
-기존 .md 파일을 스캔하여 목차 생성:
-- 각 .md 파일의 첫 `#` 헤더를 제목으로 추출
-- 파일명 순서대로 정렬
-
+**SUMMARY.md:**
 ```markdown
 # Summary
 
@@ -143,8 +163,7 @@ limit-results = 30
 - [Chapter 2](02-setup.md)
 ```
 
-#### introduction.md
-
+**introduction.md:**
 ```markdown
 # {TITLE}
 
@@ -155,8 +174,73 @@ limit-results = 30
 [Chapter 1]({FIRST_CHAPTER})부터 시작하세요.
 ```
 
-### Step 6: 결과 출력
+---
 
+#### 다중 모드
+
+**프로젝트 루트**에 3개 파일을 생성한다.
+
+**book.toml:**
+```toml
+[book]
+title = "{TITLE}"
+authors = ["{AUTHOR}"]
+language = "{LANG}"
+description = "{DESCRIPTION}"
+src = "."
+
+[build]
+build-dir = "docs"
+create-missing = false
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+
+[output.html.search]
+enable = true
+limit-results = 30
+```
+
+**SUMMARY.md:**
+
+각 디렉토리가 섹션(`#`)이 되고, 하위 .md 파일이 챕터(`-`)가 된다:
+
+```markdown
+# Summary
+
+[소개](introduction.md)
+
+# Tutorial
+
+- [Overview](tutorial/01-overview.md)
+- [Settings](tutorial/02-settings.md)
+
+# YouTube
+
+- [Episode 01](youtube/ep01.md)
+- [Episode 02](youtube/ep02.md)
+```
+
+**섹션 제목 결정:**
+1. 디렉토리 내 첫 번째 .md 파일의 `#` 헤더에서 추출 시도
+2. 없으면 디렉토리명을 Title Case로 변환 (예: `youtube` → `YouTube`)
+
+**introduction.md:**
+```markdown
+# {TITLE}
+
+{DESCRIPTION}
+
+## 목차
+
+- [Tutorial](tutorial/01-overview.md)
+- [YouTube](youtube/ep01.md)
+```
+
+### Step 7: 결과 출력
+
+**단일 모드:**
 ```
 ## mdBook 초기화 완료
 
@@ -168,6 +252,20 @@ limit-results = 30
 다음 단계:
   /mdbook serve {DIR}  — 미리보기
   /mdbook build {DIR}  — 빌드
+```
+
+**다중 모드:**
+```
+## mdBook 초기화 완료
+
+프로젝트 루트에 추가된 파일:
+- book.toml
+- SUMMARY.md (2 sections)
+- introduction.md
+
+다음 단계:
+  /mdbook serve .  — 미리보기
+  /mdbook build .  — 빌드
 ```
 
 ---
@@ -324,7 +422,7 @@ SUMMARY.md와 파일 목록이 일치합니다.
 
 <examples>
 
-### 예시 1: 초기화 (로컬 전용)
+### 예시 1: 단일 디렉토리 초기화
 
 ```
 User: /mdbook init tutorial
@@ -348,7 +446,36 @@ tutorial/ 에 추가된 파일:
   /mdbook build tutorial  — 빌드
 ```
 
-### 예시 2: 빌드
+### 예시 2: 다중 디렉토리 초기화
+
+```
+User: /mdbook init tutorial youtube
+
+Claude: 다중 디렉토리 모드
+
+=== tutorial ===
+- 01-overview.md
+- 02-settings.md
+
+=== youtube ===
+- ep01.md
+- ep02.md
+
+[프로젝트 정보 질문 → 답변]
+
+## mdBook 초기화 완료
+
+프로젝트 루트에 추가된 파일:
+- book.toml
+- SUMMARY.md (2 sections)
+- introduction.md
+
+다음 단계:
+  /mdbook serve .  — 미리보기
+  /mdbook build .  — 빌드
+```
+
+### 예시 3: 빌드
 
 ```
 User: /mdbook build tutorial
@@ -367,7 +494,7 @@ docs/ (15 HTML files)
   git push
 ```
 
-### 예시 3: 자동 탐지 빌드
+### 예시 4: 자동 탐지 빌드
 
 ```
 User: /mdbook build
@@ -382,7 +509,7 @@ mdbook build tutorial
 docs/ (15 HTML files)
 ```
 
-### 예시 4: 개발 서버
+### 예시 5: 개발 서버
 
 ```
 User: /mdbook serve tutorial
@@ -396,7 +523,7 @@ http://localhost:3000 에서 미리보기하세요.
 Ctrl+C로 종료합니다.
 ```
 
-### 예시 5: book.toml 없음
+### 예시 6: book.toml 없음
 
 ```
 User: /mdbook build
@@ -409,7 +536,7 @@ book.toml을 찾을 수 없습니다.
   /pages <dir>        — CI 자동 빌드
 ```
 
-### 예시 6: SUMMARY 동기화
+### 예시 7: SUMMARY 동기화
 
 ```
 User: /mdbook sync tutorial
@@ -433,7 +560,7 @@ SUMMARY.md 업데이트 완료.
 `/mdbook build tutorial` 로 빌드하세요.
 ```
 
-### 예시 7: 동기화 (변경 없음)
+### 예시 8: 동기화 (변경 없음)
 
 ```
 User: /mdbook sync

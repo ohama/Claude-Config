@@ -120,7 +120,7 @@ mdBook 로컬 빌드. CI 없이 직접 docs/를 생성하고 커밋한다.
 
 | 사용법 | 설명 |
 |--------|------|
-| `/mdbook init <dir>` | mdBook 초기화 (CI 없이) |
+| `/mdbook init <dir> [dir2] ...` | mdBook 초기화 (CI 없이, 다중 디렉토리 지원) |
 | `/mdbook build [dir]` | 로컬 빌드 |
 | `/mdbook serve [dir]` | 로컬 개발 서버 |
 | `/mdbook clean [dir]` | 빌드 출력 정리 |
