@@ -338,9 +338,7 @@ When Claude encounters `type="checkpoint:*"`:
 
 **For checkpoint:human-verify:**
 ```
-╔═══════════════════════════════════════════════════════╗
-║  CHECKPOINT: Verification Required                    ║
-╚═══════════════════════════════════════════════════════╝
+CHECKPOINT: Verification Required
 
 Progress: 5/8 tasks complete
 Task: Responsive dashboard layout
@@ -354,16 +352,12 @@ How to verify:
   4. Tablet (768px): Sidebar collapses to icons
   5. Mobile (375px): Sidebar hidden, hamburger menu appears
 
-────────────────────────────────────────────────────────
 → YOUR ACTION: Type "approved" or describe issues
-────────────────────────────────────────────────────────
 ```
 
 **For checkpoint:decision:**
 ```
-╔═══════════════════════════════════════════════════════╗
-║  CHECKPOINT: Decision Required                        ║
-╚═══════════════════════════════════════════════════════╝
+CHECKPOINT: Decision Required
 
 Progress: 2/6 tasks complete
 Task: Select authentication provider
@@ -385,16 +379,12 @@ Options:
      Pros: Free, no vendor lock-in, widely adopted
      Cons: More setup work, DIY security updates
 
-────────────────────────────────────────────────────────
 → YOUR ACTION: Select supabase, clerk, or nextauth
-────────────────────────────────────────────────────────
 ```
 
 **For checkpoint:human-action:**
 ```
-╔═══════════════════════════════════════════════════════╗
-║  CHECKPOINT: Action Required                          ║
-╚═══════════════════════════════════════════════════════╝
+CHECKPOINT: Action Required
 
 Progress: 3/8 tasks complete
 Task: Deploy to Vercel
@@ -409,9 +399,7 @@ What you need to do:
 
 I'll verify: vercel whoami returns your account
 
-────────────────────────────────────────────────────────
 → YOUR ACTION: Type "done" when authenticated
-────────────────────────────────────────────────────────
 ```
 </execution_protocol>
 
@@ -437,9 +425,7 @@ Claude: Running `vercel --yes` to deploy...
 
 Error: Not authenticated. Please run 'vercel login'
 
-╔═══════════════════════════════════════════════════════╗
-║  CHECKPOINT: Action Required                          ║
-╚═══════════════════════════════════════════════════════╝
+CHECKPOINT: Action Required
 
 Progress: 2/8 tasks complete
 Task: Deploy to Vercel
@@ -453,9 +439,7 @@ What you need to do:
 
 I'll verify: vercel whoami returns your account
 
-────────────────────────────────────────────────────────
 → YOUR ACTION: Type "done" when authenticated
-────────────────────────────────────────────────────────
 
 User: done
 

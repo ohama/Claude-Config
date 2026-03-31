@@ -145,9 +145,7 @@ ls "${PHASE_DIR}"/*-RESEARCH.md 2>/dev/null
 
 Display stage banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► RESEARCHING PHASE {X}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning researcher...
 ```
@@ -251,9 +249,7 @@ UAT_CONTENT=$(cat "${PHASE_DIR}"/*-UAT.md 2>/dev/null)
 
 Display stage banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PLANNING PHASE {X}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning planner...
 ```
@@ -341,9 +337,7 @@ Parse planner output:
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► VERIFYING PLANS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning plan checker...
 ```
@@ -472,9 +466,7 @@ Route to `<offer_next>`.
 <offer_next>
 Output this markdown directly (not as a code block):
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {X} PLANNED ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {X}: {Name}** — {N} plan(s) in {M} wave(s)
 
@@ -486,7 +478,6 @@ Output this markdown directly (not as a code block):
 Research: {Completed | Used existing | Skipped}
 Verification: {Passed | Passed with override | Skipped}
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -496,13 +487,11 @@ Verification: {Passed | Passed with override | Skipped}
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - cat .planning/phases/{phase-dir}/*-PLAN.md — review plans
 - /gsd:plan-phase {X} --research — re-research first
 
-───────────────────────────────────────────────────────────────
 </offer_next>
 
 <success_criteria>

@@ -171,7 +171,6 @@ Output this markdown directly (not as a code block). Route based on status:
 
 All requirements covered. Cross-phase integration verified. E2E flows complete.
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -181,7 +180,6 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 ---
 
@@ -208,7 +206,6 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 {For each flow gap:}
 - **{flow name}:** breaks at {step}
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -218,13 +215,11 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - cat .planning/v{version}-MILESTONE-AUDIT.md — see full report
 - /gsd:complete-milestone {version} — proceed anyway (accept tech debt)
 
-───────────────────────────────────────────────────────────────
 
 ---
 
@@ -246,7 +241,6 @@ All requirements met. No critical blockers. Accumulated tech debt needs review.
 
 ### Total: {N} items across {M} phases
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Options
 
@@ -260,7 +254,6 @@ All requirements met. No critical blockers. Accumulated tech debt needs review.
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 </offer_next>
 
 <success_criteria>

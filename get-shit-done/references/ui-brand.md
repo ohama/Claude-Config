@@ -7,9 +7,7 @@ Visual patterns for user-facing GSD output. Orchestrators @-reference this file.
 Use for major workflow transitions.
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► {STAGE NAME}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Stage names (uppercase):**
@@ -30,15 +28,11 @@ Use for major workflow transitions.
 User action required. 62-character width.
 
 ```
-╔══════════════════════════════════════════════════════════════╗
-║  CHECKPOINT: {Type}                                          ║
-╚══════════════════════════════════════════════════════════════╝
+CHECKPOINT: {Type}
 
 {Content}
 
-──────────────────────────────────────────────────────────────
 → {ACTION PROMPT}
-──────────────────────────────────────────────────────────────
 ```
 
 **Types:**
@@ -102,7 +96,6 @@ Plans: 3/5 complete
 Always at end of major completions.
 
 ```
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -112,13 +105,11 @@ Always at end of major completions.
 
 <sub>`/clear` first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - `/gsd:alternative-1` — description
 - `/gsd:alternative-2` — description
 
-───────────────────────────────────────────────────────────────
 ```
 
 ---
@@ -126,9 +117,7 @@ Always at end of major completions.
 ## Error Box
 
 ```
-╔══════════════════════════════════════════════════════════════╗
-║  ERROR                                                       ║
-╚══════════════════════════════════════════════════════════════╝
+ERROR
 
 {Error description}
 

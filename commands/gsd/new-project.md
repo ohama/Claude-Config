@@ -180,9 +180,7 @@ Exit command.
 **Display stage banner:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► QUESTIONING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Open the conversation:**
@@ -489,9 +487,7 @@ Use AskUserQuestion:
 
 Display stage banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► RESEARCHING
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Researching [domain] ecosystem...
 ```
@@ -706,9 +702,7 @@ Commit after writing.
 
 Display research complete banner and key findings:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► RESEARCH COMPLETE ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## Key Findings
 
@@ -725,9 +719,7 @@ Files: `.planning/research/`
 
 Display stage banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► DEFINING REQUIREMENTS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Load context:**
@@ -868,9 +860,7 @@ EOF
 
 Display stage banner:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► CREATING ROADMAP
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning roadmapper...
 ```
@@ -1011,9 +1001,7 @@ EOF
 Present completion with next steps:
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PROJECT INITIALIZED ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **[Project Name]**
 
@@ -1027,7 +1015,6 @@ Present completion with next steps:
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -1042,7 +1029,6 @@ Present completion with next steps:
 **Also available:**
 - /gsd:plan-phase 1 — skip discussion, plan directly
 
-───────────────────────────────────────────────────────────────
 ```
 
 </process>

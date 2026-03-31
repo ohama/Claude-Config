@@ -143,16 +143,13 @@ Output this markdown directly (not as a code block). Route based on status:
 
 **Route A: Phase verified, more phases remain**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {Z} COMPLETE ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {Z}: {Name}**
 
 {Y} plans executed
 Goal verified ✓
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -162,28 +159,23 @@ Goal verified ✓
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - /gsd:plan-phase {Z+1} — skip discussion, plan directly
 - /gsd:verify-work {Z} — manual acceptance testing before continuing
 
-───────────────────────────────────────────────────────────────
 
 ---
 
 **Route B: Phase verified, milestone complete**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► MILESTONE COMPLETE 🎉
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **v1.0**
 
 {N} phases completed
 All phase goals verified ✓
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -193,21 +185,17 @@ All phase goals verified ✓
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - /gsd:verify-work — manual acceptance testing
 - /gsd:complete-milestone — skip audit, archive directly
 
-───────────────────────────────────────────────────────────────
 
 ---
 
 **Route C: Gaps found — need additional planning**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {Z} GAPS FOUND ⚠
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {Z}: {Name}**
 
@@ -218,7 +206,6 @@ Report: .planning/phases/{phase_dir}/{phase}-VERIFICATION.md
 
 {Extract gap summaries from VERIFICATION.md}
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -228,13 +215,11 @@ Report: .planning/phases/{phase_dir}/{phase}-VERIFICATION.md
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - cat .planning/phases/{phase_dir}/{phase}-VERIFICATION.md — see full report
 - /gsd:verify-work {Z} — manual testing before planning
 
-───────────────────────────────────────────────────────────────
 
 ---
 

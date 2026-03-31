@@ -91,7 +91,6 @@ STOP here if ahead.
 **Latest:** 1.5.15
 
 ### What's New
-────────────────────────────────────────────────────────────
 
 ## [1.5.15] - 2026-01-20
 
@@ -103,7 +102,6 @@ STOP here if ahead.
 ### Fixed
 - Bug fix Y
 
-────────────────────────────────────────────────────────────
 
 ⚠️  **Note:** The installer performs a clean install of GSD folders:
 - `./.claude/commands/gsd/` will be wiped and replaced
@@ -148,9 +146,7 @@ rm -f ./.claude/cache/gsd-update-check.json
 Format completion message (changelog was already shown in confirmation step):
 
 ```
-╔═══════════════════════════════════════════════════════════╗
-║  GSD Updated: v1.5.10 → v1.5.15                           ║
-╚═══════════════════════════════════════════════════════════╝
+GSD Updated: v1.5.10 → v1.5.15
 
 ⚠️  Restart Claude Code to pick up the new commands.
 

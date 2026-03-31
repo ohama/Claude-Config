@@ -75,16 +75,13 @@ Output this markdown directly (not as a code block). Route based on UAT results:
 
 **Route A: All tests pass, more phases remain**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {Z} VERIFIED ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {Z}: {Name}**
 
 {N}/{N} tests passed
 UAT complete ✓
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -94,28 +91,23 @@ UAT complete ✓
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - /gsd:plan-phase {Z+1} — skip discussion, plan directly
 - /gsd:execute-phase {Z+1} — skip to execution (if already planned)
 
-───────────────────────────────────────────────────────────────
 
 ---
 
 **Route B: All tests pass, milestone complete**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {Z} VERIFIED ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {Z}: {Name}**
 
 {N}/{N} tests passed
 Final phase verified ✓
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -125,20 +117,16 @@ Final phase verified ✓
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - /gsd:complete-milestone — skip audit, archive directly
 
-───────────────────────────────────────────────────────────────
 
 ---
 
 **Route C: Issues found, fix plans ready**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {Z} ISSUES FOUND ⚠
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {Z}: {Name}**
 
@@ -150,7 +138,6 @@ Fix plans verified ✓
 
 {List issues with severity from UAT.md}
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -160,21 +147,17 @@ Fix plans verified ✓
 
 <sub>/clear first → fresh context window</sub>
 
-───────────────────────────────────────────────────────────────
 
 **Also available:**
 - cat .planning/phases/{phase_dir}/*-PLAN.md — review fix plans
 - /gsd:plan-phase {Z} --gaps — regenerate fix plans
 
-───────────────────────────────────────────────────────────────
 
 ---
 
 **Route D: Issues found, planning blocked**
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PHASE {Z} BLOCKED ✗
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {Z}: {Name}**
 
@@ -185,7 +168,6 @@ Fix planning blocked after {X} iterations
 
 {List blocking issues from planner/checker output}
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -196,13 +178,11 @@ Review the issues above and either:
 2. Manually address blockers
 3. Accept current state and continue
 
-───────────────────────────────────────────────────────────────
 
 **Options:**
 - /gsd:plan-phase {Z} --gaps — retry fix planning with guidance
 - /gsd:discuss-phase {Z} — gather more context before replanning
 
-───────────────────────────────────────────────────────────────
 </offer_next>
 
 <success_criteria>

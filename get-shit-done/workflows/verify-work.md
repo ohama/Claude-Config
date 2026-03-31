@@ -191,17 +191,13 @@ Read Current Test section from UAT file.
 Display using checkpoint box format:
 
 ```
-╔══════════════════════════════════════════════════════════════╗
-║  CHECKPOINT: Verification Required                           ║
-╚══════════════════════════════════════════════════════════════╝
+CHECKPOINT: Verification Required
 
 **Test {number}: {name}**
 
 {expected}
 
-──────────────────────────────────────────────────────────────
 → Type "pass" or describe what's wrong
-──────────────────────────────────────────────────────────────
 ```
 
 Wait for user response (plain text, no AskUserQuestion).
@@ -374,9 +370,7 @@ Diagnosis runs automatically - no user prompt. Parallel agents investigate simul
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PLANNING FIXES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning planner for gap closure...
 ```
@@ -423,9 +417,7 @@ On return:
 
 Display:
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► VERIFYING FIX PLANS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning plan checker...
 ```
@@ -519,9 +511,7 @@ Wait for user response.
 **Present completion and next steps:**
 
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► FIXES READY ✓
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {X}: {Name}** — {N} gap(s) diagnosed, {M} fix plan(s) created
 
@@ -532,7 +522,6 @@ Wait for user response.
 
 Plans verified and ready for execution.
 
-───────────────────────────────────────────────────────────────
 
 ## ▶ Next Up
 
@@ -540,7 +529,6 @@ Plans verified and ready for execution.
 
 `/clear` then `/gsd:execute-phase {phase} --gaps-only`
 
-───────────────────────────────────────────────────────────────
 ```
 </step>
 
